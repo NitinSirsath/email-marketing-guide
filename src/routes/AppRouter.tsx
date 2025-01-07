@@ -7,25 +7,11 @@ import {
   useLocation,
 } from "react-router-dom";
 import { useAuthStore } from "../services/store/auth/authStore";
+import AppLayout from "../layout/AppLayout";
+import SnackbarActions from "../components/toastMessage/SnackbarActions";
+import BackdropLoader from "../components/loaders/BackdropLoader";
 
 const AppRouter = () => {
-  // const location = useLocation();
-  // const userDataString = getUserData();
-
-  // const isLoginPage = location.pathname === '/login';
-  // const isVerifyEmail = location.pathname.split('/').slice(0, 2).join('/') === '/verify-email';
-  // const isRegisterPage = location.pathname === '/register';
-  // const isSetupUser = location.pathname === '/setupuser';
-  // const pathLocation = location.pathname === '/' ? 'home' : location.pathname;
-
-  // function extractTextsFromPath(str: any) {
-  //   const parts = str.split('/');
-  //   const primaryText = parts[1]?.replace(/([a-z])([A-Z])/g, '$1 $2');
-  //   const secondaryText = parts[2]?.replace(/([a-z])([A-Z])/g, '$1 $2');
-  //   return { primaryText, secondaryText };
-  // }
-  // const { primaryText, secondaryText } = extractTextsFromPath(pathLocation);
-
   const { isLoggedIn } = useAuthStore();
   const navigate = useNavigate();
   const location = useLocation();
