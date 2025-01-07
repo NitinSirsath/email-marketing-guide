@@ -1,33 +1,33 @@
-import { createTheme } from '@mui/material/styles';
+import { createTheme } from "@mui/material/styles";
 
 // Light mode color conventions
 const lightColors = {
-  primary: '#3365D3', // Blue
-  secondary: '#34495E', // Purple
-  text: '#333333', // Dark gray
-  background: '#ffffff', // White
-  surface: '#f5f5f5', // Light gray
-  error: '#f44336', // Red
-  success: '#4caf50', // Green
-  neutral: '#757575', // Medium gray
+  primary: "#3365D3", // Blue
+  secondary: "#34495E", // Purple
+  text: "#333333", // Dark gray
+  background: "#ffffff", // White
+  surface: "#f5f5f5", // Light gray
+  error: "#f44336", // Red
+  success: "#4caf50", // Green
+  neutral: "#757575", // Medium gray
 };
 
 // Dark mode color conventions
 const darkColors = {
-  primary: '#6699CC', // Light blue
-  secondary: '#95A5A6', // Pink
-  text: '#ffffff', // White
-  background: '#121212', // Dark gray
-  surface: '#333333', // Darker gray
-  error: '#d32f2f', // Dark red
-  success: '#00e676', // Dark green
-  neutral: '#bdbdbd', // Light gray
+  primary: "#6699CC", // Light blue
+  secondary: "#95A5A6", // Pink
+  text: "#ffffff", // White
+  background: "#121212", // Dark gray
+  surface: "#333333", // Darker gray
+  error: "#d32f2f", // Dark red
+  success: "#00e676", // Dark green
+  neutral: "#bdbdbd", // Light gray
 };
 
 // Light mode theme
 export const lightTheme = createTheme({
   palette: {
-    mode: 'light',
+    mode: "light",
     primary: {
       main: lightColors.primary,
     },
@@ -52,30 +52,30 @@ export const lightTheme = createTheme({
     MuiButton: {
       styleOverrides: {
         root: {
-          textTransform: 'none', // Set to "none" to prevent all caps
+          textTransform: "none", // Set to "none" to prevent all caps
           borderRadius: 7,
-          fontWeight: 'bold',
+          fontWeight: "bold",
         },
       },
     },
     MuiTextField: {
       styleOverrides: {
         root: {
-          margin: '8px 0px',
+          margin: "8px 0px",
         },
       },
     },
     MuiAutocomplete: {
       styleOverrides: {
         root: {
-          margin: '28px 0px',
+          margin: "28px 0px",
         },
       },
     },
     MuiFormControl: {
       styleOverrides: {
         root: {
-          margin: '8px 0px',
+          margin: "8px 0px",
         },
       },
     },
@@ -85,7 +85,7 @@ export const lightTheme = createTheme({
 // Dark mode theme
 export const darkTheme = createTheme({
   palette: {
-    mode: 'dark',
+    mode: "dark",
     primary: {
       main: darkColors.primary,
     },
@@ -110,30 +110,30 @@ export const darkTheme = createTheme({
     MuiButton: {
       styleOverrides: {
         root: {
-          textTransform: 'none', // Set to "none" to prevent all caps
+          textTransform: "none", // Set to "none" to prevent all caps
           borderRadius: 7,
-          fontWeight: 'bold',
+          fontWeight: "bold",
         },
       },
     },
     MuiTextField: {
       styleOverrides: {
         root: {
-          margin: '8px 0px',
+          margin: "8px 0px",
         },
       },
     },
     MuiAutocomplete: {
       styleOverrides: {
         root: {
-          margin: '28px 0px',
+          margin: "28px 0px",
         },
       },
     },
     MuiFormControl: {
       styleOverrides: {
         root: {
-          margin: '8px 0px',
+          margin: "8px 0px",
         },
       },
     },
