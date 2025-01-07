@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, ReactNode } from "react";
 import {
   Route,
   Routes,
@@ -10,128 +10,43 @@ import { useAuthStore } from "../services/store/auth/authStore";
 import AppLayout from "../layout/AppLayout";
 import SnackbarActions from "../components/toastMessage/SnackbarActions";
 import BackdropLoader from "../components/loaders/BackdropLoader";
+import NotFoundPage from "./pages/404Page/NotFoundPage";
+import HomePage from "./pages/HomePage/Index";
+import LoginPage from "./pages/RegisterPages/LoginPage/Index";
 
 const AppRouter = () => {
   const { isLoggedIn } = useAuthStore();
   const navigate = useNavigate();
-  const location = useLocation();
-  const isShareLinkPage = location.pathname.startsWith("/shareLink");
 
   useEffect(() => {
-    if (!isLoggedIn && !isShareLinkPage) {
+    if (!isLoggedIn) {
       navigate("/login");
     }
-  }, [isLoggedIn]);
+  }, [isLoggedIn, navigate]);
 
   return (
     <AppLayout>
-      <div>
-        <SnackbarActions />
-
-        <BackdropLoader />
-        <Routes>
-          <Route
-            path="/login"
-            element={
-              <PublicRoutes>
-                <LoginPage />
-              </PublicRoutes>
-            }
-          />
-          <Route
-            path="/verify-email/:token"
-            element={
-              // <PublicRoutes>
-              <VerifyUser />
-              // </PublicRoutes>
-            }
-          />
-          <Route
-            path="/shareLink/:token"
-            element={
-              // <PublicRoutes>
-              <ShareLinkPage />
-              // </PublicRoutes>
-            }
-          />
-          {/* <Route
-            path="/register"
-            element={
-              <PublicRoutes>
-                <RegisterForm />
-              </PublicRoutes>
-            }
-          /> */}
-
-          <Route path="/setupuser" element={<CreateUserPage />} />
-          <Route
-            index
-            element={
-              <ProtectedRoutes>
-                <HomePage />
-              </ProtectedRoutes>
-            }
-          />
-          {/* <Route
-            path="/Report/ViewReports"
-            element={
-              <ProtectedRoutes>
-                <ViewReports />
-              </ProtectedRoutes>
-            }
-          /> */}
-          <Route
-            path="/Report/ManageReports"
-            element={
-              <ProtectedRoutes>
-                <ManageReportsPage />
-              </ProtectedRoutes>
-            }
-          />
-          <Route
-            path="/Report/ReportUsage"
-            element={
-              <ProtectedRoutes>
-                <ReportUsagePage />
-              </ProtectedRoutes>
-            }
-          />
-          <Route
-            path="/GroupManagement/EditGroup"
-            element={
-              <ProtectedRoutes>
-                <EditGroup />
-              </ProtectedRoutes>
-            }
-          />
-          <Route
-            path="/UserManagement/ManageReports"
-            element={
-              <ProtectedRoutes>
-                <ManageReports />
-              </ProtectedRoutes>
-            }
-          />
-          <Route
-            path="/UserManagement/ManageUsers"
-            element={
-              <ProtectedRoutes>
-                <CreateUser />
-              </ProtectedRoutes>
-            }
-          />
-          <Route
-            path="/PowerBI/Report/:creditionals"
-            element={
-              <ProtectedRoutes>
-                <PowerBIReport />
-              </ProtectedRoutes>
-            }
-          />
-
-          <Route path="/*" element={<NotFoundPage />} />
-        </Routes>
-      </div>
+      <SnackbarActions />
+      <BackdropLoader />
+      <Routes>
+        <Route
+          path="/login"
+          element={
+            <PublicRoutes>
+              <LoginPage />
+            </PublicRoutes>
+          }
+        />
+        <Route
+          path="/"
+          element={
+            <ProtectedRoutes>
+              <HomePage />
+            </ProtectedRoutes>
+          }
+        />
+        <Route path="/*" element={<NotFoundPage />} />
+      </Routes>
     </AppLayout>
   );
 };
@@ -139,29 +54,26 @@ const AppRouter = () => {
 interface RouteProps {
   children: ReactNode;
 }
-// ProtectedRoutes component
 
 const ProtectedRoutes = ({ children }: RouteProps) => {
   const { isLoggedIn } = useAuthStore();
   const location = useLocation();
 
-  // Check if the current URL path includes '/sharelink'
-  const isShareLinkPage = location.pathname.startsWith("/shareLink");
-
-  if (!isLoggedIn && !isShareLinkPage) {
-    return <Navigate to="/login" />; // Redirect to /login if not authenticated and not on shareLink
+  if (!isLoggedIn) {
+    return <Navigate to="/login" state={{ from: location }} />;
   }
 
-  return children;
+  return <>{children}</>;
 };
 
 const PublicRoutes = ({ children }: RouteProps) => {
   const { isLoggedIn } = useAuthStore();
 
   if (isLoggedIn) {
-    return <Navigate to="/" />; // Redirect to AccessPage if not authenticated
+    return <Navigate to="/" />;
   }
 
-  return children;
+  return <>{children}</>;
 };
+
 export default AppRouter;

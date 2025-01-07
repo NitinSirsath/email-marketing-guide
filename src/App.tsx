@@ -3,6 +3,7 @@ import { ThemeProvider } from "@emotion/react";
 import useThemeStore from "./services/store/theme/themeStore";
 import { darkTheme, lightTheme } from "./theme/theme";
 import { Paper, createTheme } from "@mui/material";
+import AppRouter from "./routes/AppRouter";
 // import useLastUpdateHistory from './components/hooks/apiHistory/useLastUpdateHistory';
 
 function App() {
@@ -21,8 +22,7 @@ function App() {
           transition: "background-color 0.5s ease",
         }}
       >
-        {/* <AppRouter /> */}
-        <div>s</div>
+        <AppRouter />
       </Paper>
     </ThemeProvider>
   );

@@ -1,27 +1,23 @@
-import * as React from 'react';
-import Box from '@mui/material/Box';
-import Avatar from '@mui/material/Avatar';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import IconButton from '@mui/material/IconButton';
-import Tooltip from '@mui/material/Tooltip';
-import Settings from '@mui/icons-material/Settings';
-import Logout from '@mui/icons-material/Logout';
-import { menuStyles } from '../../../styles/menu/menuObject';
-import { useAuthStore } from '../../../services/store/auth/authStore';
-import { removeUserData } from '../../../services/localStorage/authUtils';
-import { useNavigate } from 'react-router-dom';
-import { useUserInfoStore } from '../../../services/store/user/userStore';
-import { GetUserInfoType } from '../../../types/user/user.types';
+import * as React from "react";
+import Box from "@mui/material/Box";
+import Avatar from "@mui/material/Avatar";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import IconButton from "@mui/material/IconButton";
+import Tooltip from "@mui/material/Tooltip";
+import Settings from "@mui/icons-material/Settings";
+import Logout from "@mui/icons-material/Logout";
+import { useAuthStore } from "../../../services/store/auth/authStore";
+import { removeUserData } from "../../../services/localStorage/authUtils";
+import { useNavigate } from "react-router-dom";
+import { menuStyles } from "../../../styles/menu/menuObject";
+
 // import DarkModeIcon from '@mui/icons-material/DarkMode';
 // import useThemeStore from '../../../services/store/theme/themeStore';
 // import WbSunnyIcon from '@mui/icons-material/WbSunny';
 
 export default function AccountMenu() {
-  const { getUserInfoFromSession } = useUserInfoStore();
-  const userProfileInfo: GetUserInfoType = getUserInfoFromSession();
-
   const { setLoggedOut } = useAuthStore();
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -34,38 +30,40 @@ export default function AccountMenu() {
   };
 
   const handleSettings = () => {
-    navigate('/Settings');
+    navigate("/Settings");
     handleClose();
   };
 
   const handleLogout = () => {
     removeUserData();
     setLoggedOut();
-    navigate('/login');
+    navigate("/login");
   };
 
   function getInitials(email: string) {
-    if (!email || typeof email !== 'string') {
-      return 'N/A';
+    if (!email || typeof email !== "string") {
+      return "N/A";
     }
 
-    const initials = email.split('@')[0].toUpperCase().slice(0, 1);
+    const initials = email.split("@")[0].toUpperCase().slice(0, 1);
     return initials;
   }
 
   return (
     <React.Fragment>
-      <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
+      <Box sx={{ display: "flex", alignItems: "center", textAlign: "center" }}>
         <Tooltip title="Account settings">
           <IconButton
             onClick={handleClick}
             size="small"
             sx={{ ml: 2 }}
-            aria-controls={open ? 'account-menu' : undefined}
+            aria-controls={open ? "account-menu" : undefined}
             aria-haspopup="true"
-            aria-expanded={open ? 'true' : undefined}
+            aria-expanded={open ? "true" : undefined}
           >
-            <Avatar sx={{ width: 32, height: 32 }}>{getInitials(userProfileInfo?.username)}</Avatar>
+            <Avatar sx={{ width: 32, height: 32 }}>
+              {getInitials("Nitin")}
+            </Avatar>
           </IconButton>
         </Tooltip>
       </Box>
@@ -76,8 +74,8 @@ export default function AccountMenu() {
         onClose={handleClose}
         // onClick={handleClose}
         sx={menuStyles}
-        transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+        transformOrigin={{ horizontal: "right", vertical: "top" }}
+        anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
       >
         {/* {!darkMode ? (
           <MenuItem onClick={toggleDarkMode}>

@@ -1,0 +1,59 @@
+/* styles.css */
+
+.tableContainer {
+  height: 37vh;
+  overflow-y: auto;
+}
+
+.pageHeading {
+    color: #333; /* Use the actual color from commonColors.pageHeading */
+    font-size: 2rem; /* Default font size for larger screens */
+  }
+  
+  @media (max-width: 960px) { /* Medium screens (tablets) */
+    .pageHeading {
+      font-size: 1.5rem;
+    }
+  }
+  
+  @media (max-width: 600px) { /* Small screens (phones) */
+    .pageHeading {
+      font-size: 1.2rem;
+    }
+  }
+
+
+  /* styles.css */
+.addButtonContainer {
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+    margin: 20px 0px;
+    gap: 10px;
+  }
+  
+  @media (max-width: 960px) {
+    .addButtonContainer {
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 15px;
+    }
+    
+    .addButtonContainer button, .addButtonContainer .MuiTextField-root {
+      min-width: 300px; /* Adjust button and text field width */
+    }
+  }
+  
+  @media (max-width: 600px) {
+    .addButtonContainer {
+      flex-direction: column;
+      align-items: stretch;
+      /* gap: 40px; */
+    }
+    
+    .addButtonContainer button, .addButtonContainer .MuiTextField-root {
+      min-width: 100%; /* Full width for smaller screens */
+    }
+  }
+  
+  
