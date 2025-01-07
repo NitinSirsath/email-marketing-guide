@@ -2,26 +2,36 @@ import { createTheme } from "@mui/material/styles";
 
 // Light mode color conventions
 const lightColors = {
-  primary: "#3365D3", // Blue
-  secondary: "#34495E", // Purple
-  text: "#333333", // Dark gray
-  background: "#ffffff", // White
-  surface: "#f5f5f5", // Light gray
-  error: "#f44336", // Red
-  success: "#4caf50", // Green
-  neutral: "#757575", // Medium gray
+  primary: "#3b82f6", // Vibrant blue
+  secondary: "#6b7280", // Neutral gray
+  text: "#1f2937", // Dark gray
+  background: "#f9fafb", // Very light gray
+  surface: "#ffffff", // Pure white for contrast
+  error: "#ef4444", // Red
+  success: "#10b981", // Green
+  neutral: "#d1d5db", // Light gray
 };
 
 // Dark mode color conventions
 const darkColors = {
-  primary: "#6699CC", // Light blue
-  secondary: "#95A5A6", // Pink
-  text: "#ffffff", // White
-  background: "#121212", // Dark gray
-  surface: "#333333", // Darker gray
-  error: "#d32f2f", // Dark red
-  success: "#00e676", // Dark green
-  neutral: "#bdbdbd", // Light gray
+  primary: "#60a5fa", // Soft blue
+  secondary: "#9ca3af", // Neutral gray
+  text: "#e5e7eb", // Light gray
+  background: "#1e293b", // Deep navy-gray
+  surface: "#2d3748", // Dark gray
+  error: "#f87171", // Soft red
+  success: "#34d399", // Soft green
+  neutral: "#6b7280", // Medium gray
+};
+
+// Shared typography settings
+const typography = {
+  fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
+  body1: { fontSize: "1rem", fontWeight: 400 },
+  body2: { fontSize: "0.875rem", fontWeight: 400 },
+  h1: { fontSize: "2.25rem", fontWeight: 600 },
+  h2: { fontSize: "2rem", fontWeight: 500 },
+  h3: { fontSize: "1.75rem", fontWeight: 500 },
 };
 
 // Light mode theme
@@ -36,6 +46,7 @@ export const lightTheme = createTheme({
     },
     text: {
       primary: lightColors.text,
+      secondary: lightColors.neutral,
     },
     background: {
       default: lightColors.background,
@@ -48,34 +59,57 @@ export const lightTheme = createTheme({
       main: lightColors.success,
     },
   },
+  typography,
   components: {
     MuiButton: {
       styleOverrides: {
         root: {
-          textTransform: "none", // Set to "none" to prevent all caps
-          borderRadius: 7,
-          fontWeight: "bold",
+          textTransform: "none", // Prevent all caps
+          borderRadius: 8, // Softer edges
+          fontWeight: 500,
+          fontSize: "0.875rem", // Smaller size for minimal look
+          boxShadow: "none", // Minimal shadow
+          "&:hover": {
+            boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)", // Subtle shadow on hover
+          },
+        },
+      },
+    },
+    MuiPaper: {
+      styleOverrides: {
+        root: {
+          // borderRadius: 12, // Rounded edges for a modern look
+          boxShadow: "0px 1px 3px rgba(0, 0, 0, 0.1)", // Subtle shadow
         },
       },
     },
     MuiTextField: {
       styleOverrides: {
         root: {
-          margin: "8px 0px",
+          margin: "8px 0px", // Consistent spacing
+        },
+      },
+    },
+    MuiAppBar: {
+      styleOverrides: {
+        root: {
+          backgroundColor: lightColors.surface,
+          color: lightColors.text,
+          boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)", // Subtle elevation
         },
       },
     },
     MuiAutocomplete: {
       styleOverrides: {
         root: {
-          margin: "28px 0px",
+          margin: "20px 0px",
         },
       },
     },
     MuiFormControl: {
       styleOverrides: {
         root: {
-          margin: "8px 0px",
+          margin: "12px 0px",
         },
       },
     },
@@ -94,6 +128,7 @@ export const darkTheme = createTheme({
     },
     text: {
       primary: darkColors.text,
+      secondary: darkColors.neutral,
     },
     background: {
       default: darkColors.background,
@@ -106,34 +141,58 @@ export const darkTheme = createTheme({
       main: darkColors.success,
     },
   },
+  typography,
   components: {
     MuiButton: {
       styleOverrides: {
         root: {
-          textTransform: "none", // Set to "none" to prevent all caps
-          borderRadius: 7,
-          fontWeight: "bold",
+          textTransform: "none",
+          borderRadius: 8,
+          fontWeight: 500,
+          fontSize: "0.875rem",
+          boxShadow: "none",
+          "&:hover": {
+            boxShadow: "0px 2px 4px rgba(255, 255, 255, 0.1)", // Subtle hover shadow for dark mode
+          },
+        },
+      },
+    },
+    MuiPaper: {
+      styleOverrides: {
+        root: {
+          // borderRadius: 12,
+          backgroundColor: darkColors.surface,
+          boxShadow: "0px 1px 3px rgba(255, 255, 255, 0.1)", // Subtle dark mode shadow
         },
       },
     },
     MuiTextField: {
       styleOverrides: {
         root: {
-          margin: "8px 0px",
+          margin: "12px 0px",
+        },
+      },
+    },
+    MuiAppBar: {
+      styleOverrides: {
+        root: {
+          backgroundColor: darkColors.surface,
+          color: darkColors.text,
+          boxShadow: "0px 2px 4px rgba(255, 255, 255, 0.1)", // Minimal shadow
         },
       },
     },
     MuiAutocomplete: {
       styleOverrides: {
         root: {
-          margin: "28px 0px",
+          margin: "20px 0px",
         },
       },
     },
     MuiFormControl: {
       styleOverrides: {
         root: {
-          margin: "8px 0px",
+          margin: "12px 0px",
         },
       },
     },
