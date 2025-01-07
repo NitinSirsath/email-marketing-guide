@@ -19,6 +19,7 @@ function App() {
       <Paper
         sx={{
           backgroundColor: theme.palette.background.paper,
+          boxShadow: "none",
           transition: "background-color 0.5s ease",
         }}
       >
