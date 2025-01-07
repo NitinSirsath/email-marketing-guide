@@ -64,9 +64,7 @@ export default function Header(props: Props) {
       <AppBar
         component="nav"
         sx={{
-          background: darkMode
-            ? headerColors.darkThemed
-            : headerColors.lightThemed,
+          background: darkMode ? headerColors.darkThemed : undefined,
         }}
       >
         <Toolbar sx={{ m: 1 }}>

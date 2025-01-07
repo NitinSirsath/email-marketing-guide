@@ -2,7 +2,7 @@ import { createTheme } from "@mui/material/styles";
 
 // Light mode color conventions
 const lightColors = {
-  primary: "#3b82f6", // Vibrant blue
+  primary: "#0065FF", // Vibrant blue
   secondary: "#6b7280", // Neutral gray
   text: "#1f2937", // Dark gray
   background: "#f9fafb", // Very light gray
