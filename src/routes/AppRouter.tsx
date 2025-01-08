@@ -12,7 +12,7 @@ import SnackbarActions from "../components/toastMessage/SnackbarActions";
 import BackdropLoader from "../components/loaders/BackdropLoader";
 import NotFoundPage from "./pages/404Page/NotFoundPage";
 import HomePage from "./pages/HomePage/Index";
-import LoginPage from "./pages/RegisterPages/LoginPage/Index";
+import LoginPage from "./pages/RegisterPages/LoginPage/LoginPage";
 
 const AppRouter = () => {
   const { isLoggedIn } = useAuthStore();

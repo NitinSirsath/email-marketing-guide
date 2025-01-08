@@ -1,0 +1,117 @@
+.mainContainer{
+    display: flex;
+    height: 100vh;
+    background-color: 'inherit';
+}
+
+.leftContainer{
+    height: 100%;
+    flex: 0.6;
+    /* background-color: rgb(188, 69, 69); */
+}
+
+.loginContainer {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: 'inherit';
+}
+
+@media (max-width: 600px) {
+  .loginContainer {
+    padding: 20px;
+  }
+}
+
+
+.rightContainer{
+    height: 100%;
+    flex: 0.4;
+    /* background-color: rgb(188, 69, 69); */
+    /* background-color: rgb(94, 53, 53); */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* .loginForm{
+    color: red;
+} */
+
+.linkContainer{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.imageContainer{
+    height: 90%;
+    margin: 50px;
+    border-radius: 30px;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+}
+
+/* Add this to your existing CSS */
+
+/* Small devices (phones) */
+@media only screen and (max-width: 600px) {
+    .mainContainer {
+      flex-direction: column;
+    }
+  
+    .leftContainer {
+      flex: 0.2;
+    }
+  
+    .rightContainer {
+      flex: 0.8;
+    }
+  
+    .imageContainer {
+      height: 100%;
+      margin: 20px;
+    }
+  }
+  
+  /* Medium devices (tablets) */
+  @media only screen and (min-width: 601px) and (max-width: 1024px) {
+    .mainContainer {
+      flex-direction: column;
+    }
+  
+    .leftContainer {
+      flex: 1;
+    }
+  
+    .rightContainer {
+      flex: 1;
+    }
+  
+    .imageContainer {
+      height: 50%;
+      margin: 20px;
+    }
+  }
+  
+  /* Large devices (desktops) */
+  @media only screen and (min-width: 1025px) {
+    .mainContainer {
+      flex-direction: row;
+    }
+  
+    .leftContainer {
+      flex: 0.6;
+    }
+  
+    .rightContainer {
+      flex: 0.4;
+    }
+  
+    .imageContainer {
+      height: 90%;
+      margin: 50px;
+    }
+  }
+  
