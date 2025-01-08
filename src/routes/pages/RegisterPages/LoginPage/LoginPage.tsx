@@ -232,6 +232,9 @@ const LoginPage: React.FC = () => {
                     type="submit"
                     fullWidth
                     variant="contained"
+                    sx={{
+                      textTransform: "none", // Ensure it's applied here
+                    }}
                     color="primary"
                     endIcon={
                       isLoading ? (
@@ -256,7 +259,7 @@ const LoginPage: React.FC = () => {
                         cursor: "pointer",
                       }}
                     >
-                      Don’t have an account? Sign up
+                      Don’t have an account? Register
                     </Link>
                   </div>
                 </form>

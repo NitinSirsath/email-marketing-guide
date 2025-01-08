@@ -2,117 +2,114 @@ import React, { useState } from "react";
 import {
   TextField,
   Container,
-  Typography,
   FormControlLabel,
   Checkbox,
-  Link,
   IconButton,
   CircularProgress,
+  Link,
+  Paper,
+  Button,
 } from "@mui/material";
-import backgroundSVG from "../../../assets/images/login/background.svg";
 import { useNavigate } from "react-router-dom";
 import {
   Visibility,
   VisibilityOff,
-  Lock,
-  MailOutline,
   ArrowForwardIos,
 } from "@mui/icons-material";
 import InputAdornment from "@mui/material/InputAdornment";
-import styles from "./loginPage.module.css";
-import Button from "@mui/material/Button";
-import { useBackdropStore } from "../../../services/store/backdropLoaderStore";
-import { urls } from "../../../services/apiServices/config/urls";
-import { setUserData } from "../../../services/apiServices/config/authUtils";
-import { globalConfig } from "../../../config/globalConfig";
-import { useAuthStore } from "../../../services/store/auth/authStore";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
+import styles from "../loginPage.module.css";
+import { useAuthStore } from "../../../../services/store/auth/authStore";
+import { urls } from "../../../../services/api/urls";
+import { setUserData } from "../../../../services/localStorage/authUtils";
+import companyLogo from "../../../../assets/FutureBlink.webp";
+import registerBG from "../../../../assets/loginbg.svg";
+
 interface FormData {
+  username: string;
   email: string;
   password: string;
   confirmPassword: string;
+  usernameError: string;
   emailError: string;
   passwordError: string;
   confirmPasswordError: string;
   rememberMe: boolean;
 }
 
-const RegisterInterface = () => {
-  const { showBackdrop, hideBackdrop } = useBackdropStore();
+const lightTheme = createTheme({
+  palette: {
+    mode: "light",
+    primary: {
+      main: "#1976d2",
+    },
+    secondary: {
+      main: "#dc004e",
+    },
+    background: {
+      default: "#f5f5f5",
+      paper: "#ffffff",
+    },
+    text: {
+      primary: "#000000",
+      secondary: "#555555",
+    },
+  },
+});
+
+const RegisterInterface: React.FC = () => {
   const { setLoggedIn } = useAuthStore();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState<FormData>({
+    username: "",
     email: "",
     password: "",
     confirmPassword: "",
+    usernameError: "",
     emailError: "",
     passwordError: "",
     confirmPasswordError: "",
     rememberMe: false,
   });
   const [showPassword, setShowPassword] = useState(false);
-  const [loginError, setLoginError] = useState(null);
-
-  const handleCheckboxChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ): void => {
-    setFormData({
-      ...formData,
-      rememberMe: event.target.checked,
-    });
-  };
+  const [registerError, setRegisterError] = useState<string | null>(null);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
+    const usernameError = formData.username ? "" : "Username is required";
     const emailError = formData.email
       ? validateEmail(formData.email)
       : "Email is required";
     const passwordError = formData.password ? "" : "Password is required";
-    const confirmPasswordError = formData.confirmPassword
-      ? ""
-      : "Confirm Password is required";
-    const passwordLengthError =
-      formData.password.length >= 8
-        ? ""
-        : "Password must be at least 8 characters long";
-    const passwordMatchError =
+    const confirmPasswordError =
       formData.password === formData.confirmPassword
         ? ""
         : "Passwords do not match";
+
     setFormData({
       ...formData,
+      usernameError,
       emailError,
       passwordError,
       confirmPasswordError,
     });
 
     if (
+      formData.username &&
       formData.email &&
       formData.password &&
-      formData.confirmPassword &&
+      !usernameError &&
       !emailError &&
-      !passwordLengthError &&
-      !passwordMatchError
+      !passwordError &&
+      !confirmPasswordError
     ) {
       handleRegister(formData);
-    } else {
-      setFormData({
-        ...formData,
-        emailError: emailError || "",
-        passwordError: passwordLengthError || passwordMatchError || "",
-      });
     }
   };
 
-  const validateEmail = (email: string): string => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email) ? "" : "Invalid email format";
-  };
-
-  const handleInputChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ): void => {
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
       ...formData,
       [event.target.name]: event.target.value,
@@ -120,15 +117,32 @@ const RegisterInterface = () => {
     });
   };
 
+  const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({
+      ...formData,
+      rememberMe: event.target.checked,
+    });
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const validateEmail = (email: string): string => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email) ? "" : "Invalid email format";
+  };
+
   const handleRegister = async (formData: any) => {
+    setIsLoading(true);
     const requestBody = {
+      username: formData.username,
       email: formData.email,
       password: formData.password,
     };
-    setIsLoading(true);
 
     try {
-      const response = await fetch(urls.baseURL + "user/signup", {
+      const response = await fetch(urls.baseURL + "auth/register", {
         method: "POST",
         body: JSON.stringify(requestBody),
         headers: {
@@ -136,30 +150,27 @@ const RegisterInterface = () => {
         },
       });
 
+      const data = await response.json();
+      setIsLoading(false);
       if (response.ok) {
         handleLogin(formData);
       } else {
-        console.error("Error:", response.statusText);
-        setIsLoading(false);
+        setRegisterError(data.error || "Registration failed");
       }
     } catch (error: any) {
       setIsLoading(false);
-      console.error("Error:", error);
+      console.error("Error:", error.message);
     }
   };
 
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
-  };
-
   const handleLogin = async (formData: any) => {
-    showBackdrop();
     const requestBody = {
-      email: formData.email,
+      emailOrUsername: formData.email,
       password: formData.password,
     };
+
     try {
-      const response = await fetch(urls.baseURL + "user/signin", {
+      const response = await fetch(urls.baseURL + "auth/login", {
         method: "POST",
         body: JSON.stringify(requestBody),
         headers: {
@@ -167,215 +178,181 @@ const RegisterInterface = () => {
         },
       });
       const data = await response.json();
-      setIsLoading(false);
-      setLoggedIn();
-      if (data.error) {
-        setLoginError(data.error);
-      } else {
-        navigate("/");
-      }
       if (response.ok) {
+        setLoggedIn();
         setUserData(data.token);
-        hideBackdrop();
         navigate("/");
       } else {
-        console.error("Error:", response.statusText);
+        console.error("Login after registration failed:", data.error);
       }
     } catch (error) {
-      setIsLoading(false);
-      console.error("Error:", "error.message");
+      console.error("Error:", error.message);
     }
   };
 
   return (
-    <div className={styles.mainContainer}>
-      <div className={styles.leftContainer}>
-        <div
-          className={styles.imageContainer}
-          style={{
-            backgroundImage: `url(${backgroundSVG})`,
-            backgroundSize: "contain",
-            backgroundPosition: "center",
-            backgroundRepeat: "no-repeat",
-          }}
-        ></div>
-      </div>
-      <div className={styles.rightContainer}>
-        <div className={styles.loginForm}>
-          <Container
-            component="main"
-            maxWidth="xs"
+    <ThemeProvider theme={lightTheme}>
+      <div className={styles.mainContainer}>
+        <div className={styles.leftContainer}>
+          <div
+            className={styles.imageContainer}
             style={{
-              display: "flex",
-              flexDirection: "column",
-              backgroundColor: "#fff",
-              padding: "40px",
-              borderRadius: "8px",
-              boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
+              backgroundImage: `url(${registerBG})`,
+              backgroundSize: "contain",
+              backgroundPosition: "center",
+              backgroundRepeat: "no-repeat",
             }}
-          >
-            <div style={{ cursor: "pointer", marginBottom: "10px" }}>
-              <img
-                alt="error"
-                src={globalConfig.clinetConfig.companyLogo}
-                height={30}
-              />
-            </div>
-            <div style={{ marginBottom: "16px" }}>
-              <Typography
-                component="h1"
-                variant="h5"
-                style={{
-                  color: "#FFC627",
-                  fontWeight: 600,
-                }}
-              >
-                {globalConfig.clinetConfig.companyName}
-              </Typography>
-              <p style={{ fontSize: "12px", color: "grey" }}>
-                Start managing your reports faster and better
-              </p>
-              {loginError !== null && (
-                <h5 style={{ color: "#B71C1C" }}>{loginError}</h5>
-              )}
-            </div>
-            <form
-              onSubmit={handleSubmit}
-              style={{ width: "100%", marginTop: "8px" }}
+          ></div>
+        </div>
+        <div className={styles.rightContainer}>
+          <div className={styles.loginForm}>
+            <Paper
+              elevation={3}
+              sx={{
+                backgroundColor: "background.paper",
+                padding: "30px 10px",
+                borderRadius: "8px",
+                boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
+              }}
             >
-              <TextField
-                variant="outlined"
-                margin="normal"
-                fullWidth
-                id="email"
-                label="Email Address"
-                name="email"
-                autoComplete="email"
-                value={formData.email}
-                onChange={handleInputChange}
-                error={!!formData.emailError}
-                helperText={formData.emailError}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <MailOutline color="action" />
-                    </InputAdornment>
-                  ),
-                }}
-              />
-              <TextField
-                variant="outlined"
-                margin="normal"
-                fullWidth
-                name="password"
-                label="Password"
-                type={showPassword ? "text" : "password"}
-                id="password"
-                autoComplete="new-password"
-                value={formData.password}
-                onChange={handleInputChange}
-                error={!!formData.passwordError}
-                helperText={formData.passwordError}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <Lock color="action" />
-                    </InputAdornment>
-                  ),
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton
-                        onClick={togglePasswordVisibility}
-                        edge="end"
-                        size="large"
-                        aria-label="toggle password visibility"
-                      >
-                        {showPassword ? <VisibilityOff /> : <Visibility />}
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                }}
-              />
-              <TextField
-                variant="outlined"
-                margin="normal"
-                fullWidth
-                id="confirmPassword"
-                label="Confirm Password"
-                name="confirmPassword"
-                type={showPassword ? "text" : "password"}
-                autoComplete="new-password"
-                value={formData.confirmPassword}
-                onChange={handleInputChange}
-                error={!!formData.confirmPasswordError}
-                helperText={formData.confirmPasswordError}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <Lock color="action" />
-                    </InputAdornment>
-                  ),
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton
-                        onClick={togglePasswordVisibility}
-                        edge="end"
-                        size="large"
-                        aria-label="toggle password visibility"
-                      >
-                        {showPassword ? <VisibilityOff /> : <Visibility />}
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                }}
-              />
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={formData.rememberMe}
-                    onChange={handleCheckboxChange}
-                    color="secondary"
-                  />
-                }
-                label="Remember me"
-                style={{ marginTop: "8px", color: "#555" }}
-              />
-              <Button
-                type="submit"
-                fullWidth
-                style={{
-                  marginTop: "16px",
-                  background: "#6058C9",
-                }}
-                variant="text"
-                endIcon={
-                  !isLoading ? (
-                    <ArrowForwardIos />
-                  ) : (
-                    <CircularProgress size={20} />
-                  )
-                }
-              >
-                Register
-              </Button>
-              <div className={styles.linkContainer}>
-                <Link
-                  variant="body2"
+              <Container component="main" maxWidth="xs">
+                <div
                   style={{
-                    color: "#555",
-                    textDecoration: "none",
                     cursor: "pointer",
+                    marginBottom: "10px",
+                    textAlign: "center",
                   }}
-                  onClick={() => navigate("/login")}
                 >
-                  {"Already have an account? Sign In"}
-                </Link>
-              </div>
-            </form>
-          </Container>
+                  <img alt="Company Logo" src={companyLogo} height={30} />
+                </div>
+                {registerError && (
+                  <h5 style={{ color: lightTheme.palette.error.main }}>
+                    {registerError}
+                  </h5>
+                )}
+                <form
+                  onSubmit={handleSubmit}
+                  style={{ width: "100%", marginTop: "8px" }}
+                >
+                  <TextField
+                    variant="outlined"
+                    margin="normal"
+                    fullWidth
+                    id="username"
+                    label="Username"
+                    name="username"
+                    autoComplete="username"
+                    autoFocus
+                    value={formData.username}
+                    onChange={handleInputChange}
+                    error={!!formData.usernameError}
+                    helperText={formData.usernameError}
+                  />
+                  <TextField
+                    variant="outlined"
+                    margin="normal"
+                    fullWidth
+                    id="email"
+                    label="Email Address"
+                    name="email"
+                    autoComplete="email"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    error={!!formData.emailError}
+                    helperText={formData.emailError}
+                  />
+                  <TextField
+                    variant="outlined"
+                    margin="normal"
+                    fullWidth
+                    name="password"
+                    label="Password"
+                    type={showPassword ? "text" : "password"}
+                    id="password"
+                    autoComplete="new-password"
+                    value={formData.password}
+                    onChange={handleInputChange}
+                    error={!!formData.passwordError}
+                    helperText={formData.passwordError}
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton
+                            onClick={togglePasswordVisibility}
+                            edge="end"
+                            aria-label="toggle password visibility"
+                          >
+                            {showPassword ? <VisibilityOff /> : <Visibility />}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                  <TextField
+                    variant="outlined"
+                    margin="normal"
+                    fullWidth
+                    name="confirmPassword"
+                    label="Confirm Password"
+                    type={showPassword ? "text" : "password"}
+                    id="confirmPassword"
+                    autoComplete="new-password"
+                    value={formData.confirmPassword}
+                    onChange={handleInputChange}
+                    error={!!formData.confirmPasswordError}
+                    helperText={formData.confirmPasswordError}
+                  />
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={formData.rememberMe}
+                        onChange={handleCheckboxChange}
+                        color="primary"
+                      />
+                    }
+                    label="Remember me"
+                  />
+                  <Button
+                    type="submit"
+                    fullWidth
+                    variant="contained"
+                    color="primary"
+                    endIcon={
+                      isLoading ? (
+                        <CircularProgress size={20} color="inherit" />
+                      ) : (
+                        <ArrowForwardIos />
+                      )
+                    }
+                    sx={{
+                      textTransform: "none", // Ensure it's applied here
+                    }}
+                  >
+                    Register
+                  </Button>
+                  <div
+                    className={styles.linkContainer}
+                    style={{ marginTop: "16px", textAlign: "center" }}
+                  >
+                    <Link
+                      variant="body2"
+                      onClick={() => navigate("/login")}
+                      style={{
+                        color: lightTheme.palette.primary.main,
+                        textDecoration: "none",
+                        cursor: "pointer",
+                      }}
+                    >
+                      Already have an account? Login
+                    </Link>
+                  </div>
+                </form>
+              </Container>
+            </Paper>
+          </div>
         </div>
       </div>
-    </div>
+    </ThemeProvider>
   );
 };
 

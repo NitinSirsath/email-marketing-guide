@@ -13,16 +13,17 @@ import BackdropLoader from "../components/loaders/BackdropLoader";
 import NotFoundPage from "./pages/404Page/NotFoundPage";
 import HomePage from "./pages/HomePage/Index";
 import LoginPage from "./pages/RegisterPages/LoginPage/LoginPage";
+import RegisterInterface from "./pages/RegisterPages/registerPage/RegisterForm";
 
 const AppRouter = () => {
   const { isLoggedIn } = useAuthStore();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (!isLoggedIn) {
-      navigate("/login");
-    }
-  }, [isLoggedIn, navigate]);
+  // useEffect(() => {
+  //   if (!isLoggedIn) {
+  //     navigate("/login");
+  //   }
+  // }, [isLoggedIn, navigate]);
 
   return (
     <AppLayout>
@@ -34,6 +35,14 @@ const AppRouter = () => {
           element={
             <PublicRoutes>
               <LoginPage />
+            </PublicRoutes>
+          }
+        />
+        <Route
+          path="/register"
+          element={
+            <PublicRoutes>
+              <RegisterInterface />
             </PublicRoutes>
           }
         />
