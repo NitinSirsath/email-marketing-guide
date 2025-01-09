@@ -1,7 +1,7 @@
 // authUtils.ts
 
 const getUserData = () => {
-  const userDataToken = localStorage.getItem("qweldToken");
+  const userDataToken = localStorage.getItem("userToken");
   try {
     return userDataToken ? JSON.parse(userDataToken) : null;
   } catch (error) {
@@ -10,11 +10,11 @@ const getUserData = () => {
 };
 
 const setUserData = (userData: string) => {
-  localStorage.setItem("qweldToken", JSON.stringify(userData));
+  localStorage.setItem("userToken", JSON.stringify(userData));
 };
 
 const removeUserData = () => {
-  localStorage.removeItem("qweldToken");
+  localStorage.removeItem("userToken");
 };
 
 //user
