@@ -14,17 +14,18 @@ import NotFoundPage from "./pages/404Page/NotFoundPage";
 import HomePage from "./pages/HomePage/Index";
 import LoginPage from "./pages/RegisterPages/LoginPage/LoginPage";
 import RegisterInterface from "./pages/RegisterPages/registerPage/RegisterForm";
+import { getUserData } from "../services/localStorage/authUtils";
 
 const AppRouter = () => {
   const { isLoggedIn } = useAuthStore();
   const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   if (!isLoggedIn) {
-  //     navigate("/login");
-  //   }
-  // }, [isLoggedIn, navigate]);
-
+  useEffect(() => {
+    if (!isLoggedIn) {
+      navigate("/login");
+    }
+  }, [isLoggedIn, navigate]);
+  console.log(isLoggedIn, getUserData, "getUserData");
   return (
     <AppLayout>
       <SnackbarActions />
