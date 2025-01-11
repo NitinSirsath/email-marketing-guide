@@ -1,37 +1,41 @@
 import React from "react";
 import styles from "../styles/FlowChart.module.css";
 
-const Sidebar: React.FC = () => {
+interface SidebarProps {
+  setNodes: React.Dispatch<React.SetStateAction<any[]>>;
+}
+
+const Sidebar: React.FC<SidebarProps> = () => {
   const onDragStart = (event: React.DragEvent, nodeType: string) => {
     event.dataTransfer.setData("application/reactflow", nodeType);
     event.dataTransfer.effectAllowed = "move";
   };
 
   return (
-    <div className={styles.sidebar}>
-      <h4>Drag Nodes:</h4>
+    <aside className={styles.sidebar}>
+      <div className={styles.description}>Drag Nodes to the canvas:</div>
       <div
         className={styles.node}
-        onDragStart={(event) => onDragStart(event, "coldEmail")}
+        onDragStart={(event) => onDragStart(event, "Cold Email")}
         draggable
       >
         Cold Email
       </div>
       <div
         className={styles.node}
-        onDragStart={(event) => onDragStart(event, "waitDelay")}
+        onDragStart={(event) => onDragStart(event, "Wait/Delay")}
         draggable
       >
         Wait/Delay
       </div>
       <div
         className={styles.node}
-        onDragStart={(event) => onDragStart(event, "leadSource")}
+        onDragStart={(event) => onDragStart(event, "Lead Source")}
         draggable
       >
         Lead Source
       </div>
-    </div>
+    </aside>
   );
 };
 

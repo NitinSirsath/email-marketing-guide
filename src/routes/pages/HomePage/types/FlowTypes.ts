@@ -1,6 +1,11 @@
-import { Node, Edge } from "reactflow";
+export interface FlowchartNode {
+  id: string;
+  data: { label: string };
+  position: { x: number; y: number };
+}
 
-export interface FlowchartData {
-  nodes: Node[];
-  edges: Edge[];
+export interface FlowchartEdge {
+  id: string;
+  source: string;
+  target: string;
 }
