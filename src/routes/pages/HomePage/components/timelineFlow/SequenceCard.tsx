@@ -8,6 +8,7 @@ import {
 } from "@mui/lab";
 import { Button, Typography, Box } from "@mui/material";
 import LaptopMacIcon from "@mui/icons-material/LaptopMac";
+import { useToastStore } from "../../../../../services/store/snackbar/toastStore";
 
 interface SequenceCardProps {
   sequence: {
@@ -26,6 +27,13 @@ const SequenceCard: React.FC<SequenceCardProps> = ({
   onEdit,
   onDelete,
 }) => {
+  const { showToast } = useToastStore();
+  const isPastSchedule = new Date(sequence.scheduleTime) < new Date();
+
+  const handleDisabledButtons = () => {
+    showToast("Past entries cannot be edited or deleted", "warning");
+  };
+
   return (
     <TimelineItem>
       <TimelineSeparator>
@@ -58,15 +66,19 @@ const SequenceCard: React.FC<SequenceCardProps> = ({
           <Button
             variant="outlined"
             size="small"
-            onClick={() => onEdit(sequence)}
+            onClick={
+              isPastSchedule ? handleDisabledButtons : () => onEdit(sequence)
+            }
           >
             Edit
           </Button>
           <Button
-            variant="outlined"
+            variant="text"
             color="error"
             size="small"
-            onClick={() => onDelete(sequence)}
+            onClick={
+              isPastSchedule ? handleDisabledButtons : () => onDelete(sequence)
+            }
           >
             Delete
           </Button>
