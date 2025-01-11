@@ -1,74 +1,87 @@
 import React, { useState, useEffect } from "react";
-import {
-  Box,
-  Button,
-  Typography,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  TextField,
-} from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import Timeline from "@mui/lab/Timeline";
-import TimelineItem from "@mui/lab/TimelineItem";
-import TimelineSeparator from "@mui/lab/TimelineSeparator";
-import TimelineConnector from "@mui/lab/TimelineConnector";
-import TimelineContent from "@mui/lab/TimelineContent";
-import TimelineDot from "@mui/lab/TimelineDot";
-import LaptopMacIcon from "@mui/icons-material/LaptopMac";
 import useCustomAxios from "../../../../../services/api/customAxios";
-import ScheduleTimePicker from "./ScheduleTimePicker";
+import AddSequenceDialog from "./AddSequenceDialog";
+import SequenceCard from "./SequenceCard";
+import EditSequenceDialog from "./EditSequenceDialog";
+import ConfirmationDialog from "./ConfirmationDialog";
 
-const TimelineFlow = () => {
+const TimelineFlow: React.FC = () => {
   const axiosInstance = useCustomAxios();
   const [sequences, setSequences] = useState([]);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [newSequence, setNewSequence] = useState({
     email: "",
     scheduleTime: "",
     nodes: [{ id: "1", data: "Start", position: { x: 0, y: 0 } }],
   });
+  const [currentSequence, setCurrentSequence] = useState<any>(null);
+  const [confirmationOpen, setConfirmationOpen] = useState(false);
+  const [sequenceToDelete, setSequenceToDelete] = useState<any>(null);
 
   useEffect(() => {
-    // Fetch sequences data
     const fetchSequences = async () => {
       try {
         const response = await axiosInstance.get("/emails/all");
         setSequences(response.data.sequences);
-        console.log("Fetched sequences:", response.data.sequences);
       } catch (error) {
         console.error("Error fetching sequences:", error);
       }
     };
-
     fetchSequences();
   }, [axiosInstance]);
 
-  // Save sequence
   const saveSequence = async () => {
-    const { email, scheduleTime, nodes } = newSequence;
-
-    if (!scheduleTime) {
-      alert("Please provide a schedule time");
-      return;
-    }
-
     try {
-      const response = await axiosInstance.post("/emails/save", {
-        email,
-        scheduleTime,
-        nodes,
-      });
-      console.log("Saved sequence:", response.data);
-      setSequences((prev) => [...prev, response.data.sequence]); // Update state with new sequence
-      setDialogOpen(false); // Close dialog
+      const response = await axiosInstance.post("/emails/save", newSequence);
+      setSequences((prev) => [...prev, response.data.sequence]);
+      setDialogOpen(false);
     } catch (error) {
       console.error("Error saving sequence:", error);
     }
   };
 
-  const handleDialogOpen = () => setDialogOpen(true);
-  const handleDialogClose = () => setDialogOpen(false);
+  const updateSequence = async () => {
+    try {
+      const response = await axiosInstance.post(
+        `/emails/save`,
+        currentSequence
+      );
+      setSequences((prev) =>
+        prev.map((seq) =>
+          seq._id === currentSequence._id ? response.data.sequence : seq
+        )
+      );
+      setEditDialogOpen(false);
+    } catch (error) {
+      console.error("Error updating sequence:", error);
+    }
+  };
+
+  const deleteSequence = async (sequenceId: string) => {
+    try {
+      const response = await axiosInstance.post("/emails/delete", {
+        sequenceId,
+      });
+      setSequences((prev) => prev.filter((seq) => seq._id !== sequenceId));
+      setConfirmationOpen(false);
+      console.log("Sequence deleted successfully:", response.data);
+    } catch (error) {
+      console.error("Error deleting sequence:", error);
+    }
+  };
+
+  const handleEdit = (sequence: any) => {
+    setCurrentSequence(sequence);
+    setEditDialogOpen(true);
+  };
+
+  const handleDelete = (sequence: any) => {
+    setSequenceToDelete(sequence);
+    setConfirmationOpen(true);
+  };
 
   return (
     <div
@@ -80,7 +93,6 @@ const TimelineFlow = () => {
         gap: "20px",
       }}
     >
-      {/* Add Lead Sources */}
       <Box
         width={300}
         padding={2}
@@ -99,73 +111,55 @@ const TimelineFlow = () => {
         </Typography>
       </Box>
 
-      {/* Start Sequence Button */}
-      <Button variant="outlined" onClick={handleDialogOpen}>
+      <Button variant="outlined" onClick={() => setDialogOpen(true)}>
         Sequence Start Point
       </Button>
 
-      {/* Timeline */}
       <Box width="80%">
         <Typography variant="h6" gutterBottom>
           Timeline of Sequences
         </Typography>
         <Timeline position="alternate">
           {sequences.map((sequence) => (
-            <TimelineItem key={sequence._id}>
-              <TimelineSeparator>
-                <TimelineDot color="primary">
-                  <LaptopMacIcon />
-                </TimelineDot>
-                <TimelineConnector />
-              </TimelineSeparator>
-              <TimelineContent>
-                <Typography variant="h6">
-                  Sequence ID: {sequence._id}
-                </Typography>
-                <Typography variant="body2" color="textSecondary">
-                  Nodes Count: {sequence.nodes.length}
-                </Typography>
-                <Typography variant="body2" color="textSecondary">
-                  Created At: {new Date(sequence.createdAt).toLocaleString()}
-                </Typography>
-              </TimelineContent>
-            </TimelineItem>
+            <SequenceCard
+              key={sequence._id}
+              sequence={sequence}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
+            />
           ))}
         </Timeline>
       </Box>
 
-      {/* Add Sequence Dialog */}
-      <Dialog open={dialogOpen} onClose={handleDialogClose} fullWidth>
-        <DialogTitle>Add New Sequence</DialogTitle>
-        <DialogContent>
-          <TextField
-            label="Email"
-            fullWidth
-            margin="normal"
-            value={newSequence.email}
-            onChange={(e) =>
-              setNewSequence((prev) => ({ ...prev, email: e.target.value }))
-            }
-          />
-          <ScheduleTimePicker
-            value={newSequence.scheduleTime}
-            onChange={(value) =>
-              setNewSequence((prev) => ({ ...prev, scheduleTime: value }))
-            }
-          />
-          <Typography variant="body2" color="textSecondary" margin="normal">
-            Nodes are pre-filled with the default "Start" node.
-          </Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleDialogClose} color="secondary">
-            Cancel
-          </Button>
-          <Button onClick={saveSequence} color="primary" variant="contained">
-            Save
-          </Button>
-        </DialogActions>
-      </Dialog>
+      <AddSequenceDialog
+        dialogOpen={dialogOpen}
+        handleDialogClose={() => setDialogOpen(false)}
+        saveSequence={saveSequence}
+        newSequence={newSequence}
+        setNewSequence={setNewSequence}
+      />
+
+      {sequenceToDelete && (
+        <ConfirmationDialog
+          open={confirmationOpen}
+          onClose={() => setConfirmationOpen(false)}
+          onConfirm={() => deleteSequence(sequenceToDelete._id)}
+          sequenceDetails={{
+            email: sequenceToDelete.email,
+            scheduleTime: sequenceToDelete.scheduleTime,
+          }}
+        />
+      )}
+
+      {currentSequence && (
+        <EditSequenceDialog
+          dialogOpen={editDialogOpen}
+          handleDialogClose={() => setEditDialogOpen(false)}
+          sequence={currentSequence}
+          setSequence={setCurrentSequence}
+          saveSequence={updateSequence}
+        />
+      )}
     </div>
   );
 };

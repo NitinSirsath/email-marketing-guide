@@ -1,50 +1,39 @@
 import React from "react";
 import {
-  Button,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
   TextField,
-  Typography,
+  Button,
 } from "@mui/material";
 
-interface AddSequenceDialogProps {
+interface EditSequenceDialogProps {
   dialogOpen: boolean;
   handleDialogClose: () => void;
+  sequence: any;
+  setSequence: React.Dispatch<React.SetStateAction<any>>;
   saveSequence: () => void;
-  newSequence: {
-    email: string;
-    scheduleTime: string;
-    nodes: Array<any>;
-  };
-  setNewSequence: React.Dispatch<
-    React.SetStateAction<{
-      email: string;
-      scheduleTime: string;
-      nodes: Array<any>;
-    }>
-  >;
 }
 
-const AddSequenceDialog: React.FC<AddSequenceDialogProps> = ({
+const EditSequenceDialog: React.FC<EditSequenceDialogProps> = ({
   dialogOpen,
   handleDialogClose,
+  sequence,
+  setSequence,
   saveSequence,
-  newSequence,
-  setNewSequence,
 }) => {
   return (
     <Dialog open={dialogOpen} onClose={handleDialogClose} fullWidth>
-      <DialogTitle>Add New Sequence</DialogTitle>
+      <DialogTitle>Edit Sequence</DialogTitle>
       <DialogContent>
         <TextField
           label="Email"
           fullWidth
           margin="normal"
-          value={newSequence.email}
+          value={sequence.email}
           onChange={(e) =>
-            setNewSequence((prev) => ({ ...prev, email: e.target.value }))
+            setSequence((prev) => ({ ...prev, email: e.target.value }))
           }
         />
         <TextField
@@ -52,17 +41,14 @@ const AddSequenceDialog: React.FC<AddSequenceDialogProps> = ({
           fullWidth
           margin="normal"
           type="datetime-local"
-          value={newSequence.scheduleTime}
+          value={sequence.scheduleTime}
           onChange={(e) =>
-            setNewSequence((prev) => ({
+            setSequence((prev) => ({
               ...prev,
               scheduleTime: e.target.value,
             }))
           }
         />
-        <Typography variant="body2" color="textSecondary" margin="normal">
-          Nodes are pre-filled with the default "Start" node.
-        </Typography>
       </DialogContent>
       <DialogActions>
         <Button onClick={handleDialogClose} color="secondary">
@@ -76,4 +62,4 @@ const AddSequenceDialog: React.FC<AddSequenceDialogProps> = ({
   );
 };
 
-export default AddSequenceDialog;
+export default EditSequenceDialog;
