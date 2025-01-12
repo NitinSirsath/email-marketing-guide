@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Box, Button, Typography } from "@mui/material";
 import Timeline from "@mui/lab/Timeline";
 import useCustomAxios from "../../../../../services/api/customAxios";
@@ -8,7 +8,7 @@ import EditSequenceDialog from "./EditSequenceDialog";
 import ConfirmationDialog from "./ConfirmationDialog";
 import { emailTemplates } from "../mailTemplates/emailTemplates";
 
-const TimelineFlow: React.FC = () => {
+const TimelineFlow = () => {
   const axiosInstance = useCustomAxios();
   const [sequences, setSequences] = useState([]);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -62,6 +62,13 @@ const TimelineFlow: React.FC = () => {
       if (response.status === 201 || response.status === 200) {
         fetchSequences();
         setDialogOpen(false);
+
+        setNewSequence({
+          email: "",
+          scheduleTime: "",
+          nodes: [{ id: "1", data: "Start", position: { x: 0, y: 0 } }],
+          emailTemplate: "",
+        });
       }
     } catch (error) {
       console.error("Error saving sequence:", error);
@@ -77,6 +84,7 @@ const TimelineFlow: React.FC = () => {
       );
       if (response.status === 200) {
         fetchSequences();
+        setCurrentSequence(null);
         setEditDialogOpen(false);
       }
     } catch (error) {
