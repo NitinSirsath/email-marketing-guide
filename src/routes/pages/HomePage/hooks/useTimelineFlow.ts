@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import useCustomAxios from "../../../../services/api/customAxios";
 import { emailTemplates } from "../components/mailTemplates/emailTemplates";
 import { NewSequence, Sequence } from "../types/FlowTypes";
+import { useToastStore } from "../../../../services/store/snackbar/toastStore";
 
 // Define types for the API response and state structures
 
@@ -12,6 +13,7 @@ interface FetchSequencesResponse {
 
 const useTimelineFlow = () => {
   const axiosInstance = useCustomAxios();
+  const { showToast } = useToastStore();
   const [sequences, setSequences] = useState<Sequence[]>([]);
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
   const [editDialogOpen, setEditDialogOpen] = useState<boolean>(false);
@@ -78,8 +80,8 @@ const useTimelineFlow = () => {
       );
       if (response.status === 201 || response.status === 200) {
         fetchSequences();
+        showToast("New sequence is Created", "success");
         setDialogOpen(false);
-
         // Reset the new sequence state
         setNewSequence({
           email: "",
@@ -108,6 +110,7 @@ const useTimelineFlow = () => {
       );
       if (response.status === 200) {
         fetchSequences();
+        showToast("Sequence is updated", "success");
         setCurrentSequence(null);
         setEditDialogOpen(false);
       }
@@ -129,6 +132,7 @@ const useTimelineFlow = () => {
       }>("/emails/delete", { sequenceId });
       if (response.status === 200) {
         fetchSequences();
+        showToast("Sequence is deleted", "success");
         setConfirmationOpen(false);
       }
     } catch (error: unknown) {
