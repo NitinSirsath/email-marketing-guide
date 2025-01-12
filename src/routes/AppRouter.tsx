@@ -19,9 +19,10 @@ import { getUserData } from "../services/localStorage/authUtils";
 const AppRouter = () => {
   const { isLoggedIn } = useAuthStore();
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
-    if (!isLoggedIn) {
+    if (!isLoggedIn && location.pathname !== "/register") {
       navigate("/login");
     }
   }, [isLoggedIn, navigate]);

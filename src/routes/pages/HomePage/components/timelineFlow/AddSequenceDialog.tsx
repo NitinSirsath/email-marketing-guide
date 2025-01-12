@@ -102,6 +102,11 @@ const AddSequenceDialog: React.FC<AddSequenceDialogProps> = ({
               emailTemplate: e.target.value,
             }))
           }
+          slotProps={{
+            inputLabel: {
+              shrink: true,
+            },
+          }}
         >
           {emailTemplates.map((template) => (
             <MenuItem key={template.label} value={template.label}>

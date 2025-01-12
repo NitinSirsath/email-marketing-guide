@@ -33,6 +33,11 @@ interface FormData {
   rememberMe: boolean;
 }
 
+interface LoginResponse {
+  token?: string;
+  error?: string;
+}
+
 const lightTheme = createTheme({
   palette: {
     mode: "light",
@@ -56,7 +61,7 @@ const lightTheme = createTheme({
 const LoginPage: React.FC = () => {
   const { setLoggedIn } = useAuthStore();
   const navigate = useNavigate();
-  const [isLoading, setIsLoading] = React.useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState<FormData>({
     username: "",
     password: "",
@@ -73,37 +78,38 @@ const LoginPage: React.FC = () => {
     const usernameError = formData.username ? "" : "Username is required";
     const passwordError = formData.password ? "" : "Password is required";
 
-    setFormData({
-      ...formData,
+    setFormData((prev) => ({
+      ...prev,
       usernameError,
       passwordError,
-    });
+    }));
 
-    if (formData.username && formData.password) {
+    if (!usernameError && !passwordError) {
       handleLogin(formData);
     }
   };
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({
-      ...formData,
-      [event.target.name]: event.target.value,
-      [event.target.name + "Error"]: "",
-    });
+    const { name, value } = event.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+      [`${name}Error`]: "",
+    }));
   };
 
   const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({
-      ...formData,
+    setFormData((prev) => ({
+      ...prev,
       rememberMe: event.target.checked,
-    });
+    }));
   };
 
   const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
+    setShowPassword((prev) => !prev);
   };
 
-  const handleLogin = async (formData: any) => {
+  const handleLogin = async (formData: FormData): Promise<void> => {
     setIsLoading(true);
     const requestBody = {
       emailOrUsername: formData.username,
@@ -118,18 +124,22 @@ const LoginPage: React.FC = () => {
           "Content-Type": "application/json",
         },
       });
+
+      const data: LoginResponse = await response.json();
       setIsLoading(false);
-      const data = await response.json();
-      if (response.status === 200) {
+
+      if (response.ok && data.token) {
         setLoggedIn();
         setUserData(data.token);
         navigate("/");
       } else {
         setLoginError(data.error || "Login failed");
       }
-    } catch (error: any) {
+    } catch (error) {
       setIsLoading(false);
-      console.error("Error:", error.message);
+      const errorMessage =
+        error instanceof Error ? error.message : "An unknown error occurred";
+      setLoginError(errorMessage);
     }
   };
 
@@ -233,7 +243,7 @@ const LoginPage: React.FC = () => {
                     fullWidth
                     variant="contained"
                     sx={{
-                      textTransform: "none", // Ensure it's applied here
+                      textTransform: "none",
                     }}
                     color="primary"
                     endIcon={

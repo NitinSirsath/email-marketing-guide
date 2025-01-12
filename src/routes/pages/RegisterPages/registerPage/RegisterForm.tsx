@@ -25,6 +25,7 @@ import { setUserData } from "../../../../services/localStorage/authUtils";
 import companyLogo from "../../../../assets/FutureBlink.webp";
 import registerBG from "../../../../assets/loginbg.svg";
 
+// Define interfaces for FormData and API responses
 interface FormData {
   username: string;
   email: string;
@@ -37,23 +38,20 @@ interface FormData {
   rememberMe: boolean;
 }
 
+interface APIResponse {
+  success?: boolean;
+  token?: string;
+  error?: string;
+}
+
+// Light theme configuration
 const lightTheme = createTheme({
   palette: {
     mode: "light",
-    primary: {
-      main: "#1976d2",
-    },
-    secondary: {
-      main: "#dc004e",
-    },
-    background: {
-      default: "#f5f5f5",
-      paper: "#ffffff",
-    },
-    text: {
-      primary: "#000000",
-      secondary: "#555555",
-    },
+    primary: { main: "#1976d2" },
+    secondary: { main: "#dc004e" },
+    background: { default: "#f5f5f5", paper: "#ffffff" },
+    text: { primary: "#000000", secondary: "#555555" },
   },
 });
 
@@ -75,6 +73,7 @@ const RegisterInterface: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [registerError, setRegisterError] = useState<string | null>(null);
 
+  // Form submission handler
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
@@ -88,44 +87,41 @@ const RegisterInterface: React.FC = () => {
         ? ""
         : "Passwords do not match";
 
-    setFormData({
-      ...formData,
+    setFormData((prev) => ({
+      ...prev,
       usernameError,
       emailError,
       passwordError,
       confirmPasswordError,
-    });
+    }));
 
     if (
-      formData.username &&
-      formData.email &&
-      formData.password &&
       !usernameError &&
       !emailError &&
       !passwordError &&
       !confirmPasswordError
     ) {
-      handleRegister(formData);
+      handleRegister();
     }
   };
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({
-      ...formData,
+    setFormData((prev) => ({
+      ...prev,
       [event.target.name]: event.target.value,
-      [event.target.name + "Error"]: "",
-    });
+      [`${event.target.name}Error`]: "",
+    }));
   };
 
   const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({
-      ...formData,
+    setFormData((prev) => ({
+      ...prev,
       rememberMe: event.target.checked,
-    });
+    }));
   };
 
   const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
+    setShowPassword((prev) => !prev);
   };
 
   const validateEmail = (email: string): string => {
@@ -133,7 +129,7 @@ const RegisterInterface: React.FC = () => {
     return emailRegex.test(email) ? "" : "Invalid email format";
   };
 
-  const handleRegister = async (formData: any) => {
+  const handleRegister = async () => {
     setIsLoading(true);
     const requestBody = {
       username: formData.username,
@@ -145,25 +141,26 @@ const RegisterInterface: React.FC = () => {
       const response = await fetch(urls.baseURL + "auth/register", {
         method: "POST",
         body: JSON.stringify(requestBody),
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
       });
 
-      const data = await response.json();
+      const data: APIResponse = await response.json();
       setIsLoading(false);
+
       if (response.ok) {
-        handleLogin(formData);
+        handleLogin();
       } else {
         setRegisterError(data.error || "Registration failed");
       }
-    } catch (error: any) {
+    } catch (error) {
       setIsLoading(false);
-      console.error("Error:", error.message);
+      const errorMessage =
+        error instanceof Error ? error.message : "An unknown error occurred";
+      setRegisterError(errorMessage);
     }
   };
 
-  const handleLogin = async (formData: any) => {
+  const handleLogin = async () => {
     const requestBody = {
       emailOrUsername: formData.email,
       password: formData.password,
@@ -173,12 +170,12 @@ const RegisterInterface: React.FC = () => {
       const response = await fetch(urls.baseURL + "auth/login", {
         method: "POST",
         body: JSON.stringify(requestBody),
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
       });
-      const data = await response.json();
-      if (response.ok) {
+
+      const data: APIResponse = await response.json();
+
+      if (response.ok && data.token) {
         setLoggedIn();
         setUserData(data.token);
         navigate("/");
@@ -186,7 +183,9 @@ const RegisterInterface: React.FC = () => {
         console.error("Login after registration failed:", data.error);
       }
     } catch (error) {
-      console.error("Error:", error.message);
+      const errorMessage =
+        error instanceof Error ? error.message : "An unknown error occurred";
+      console.error("Error:", errorMessage);
     }
   };
 
@@ -234,6 +233,7 @@ const RegisterInterface: React.FC = () => {
                   onSubmit={handleSubmit}
                   style={{ width: "100%", marginTop: "8px" }}
                 >
+                  {/* Input fields */}
                   <TextField
                     variant="outlined"
                     margin="normal"
@@ -241,8 +241,6 @@ const RegisterInterface: React.FC = () => {
                     id="username"
                     label="Username"
                     name="username"
-                    autoComplete="username"
-                    autoFocus
                     value={formData.username}
                     onChange={handleInputChange}
                     error={!!formData.usernameError}
@@ -255,7 +253,6 @@ const RegisterInterface: React.FC = () => {
                     id="email"
                     label="Email Address"
                     name="email"
-                    autoComplete="email"
                     value={formData.email}
                     onChange={handleInputChange}
                     error={!!formData.emailError}
@@ -268,8 +265,6 @@ const RegisterInterface: React.FC = () => {
                     name="password"
                     label="Password"
                     type={showPassword ? "text" : "password"}
-                    id="password"
-                    autoComplete="new-password"
                     value={formData.password}
                     onChange={handleInputChange}
                     error={!!formData.passwordError}
@@ -277,11 +272,7 @@ const RegisterInterface: React.FC = () => {
                     InputProps={{
                       endAdornment: (
                         <InputAdornment position="end">
-                          <IconButton
-                            onClick={togglePasswordVisibility}
-                            edge="end"
-                            aria-label="toggle password visibility"
-                          >
+                          <IconButton onClick={togglePasswordVisibility}>
                             {showPassword ? <VisibilityOff /> : <Visibility />}
                           </IconButton>
                         </InputAdornment>
@@ -295,8 +286,6 @@ const RegisterInterface: React.FC = () => {
                     name="confirmPassword"
                     label="Confirm Password"
                     type={showPassword ? "text" : "password"}
-                    id="confirmPassword"
-                    autoComplete="new-password"
                     value={formData.confirmPassword}
                     onChange={handleInputChange}
                     error={!!formData.confirmPasswordError}
@@ -312,11 +301,15 @@ const RegisterInterface: React.FC = () => {
                     }
                     label="Remember me"
                   />
+                  {/* Submit button */}
                   <Button
                     type="submit"
                     fullWidth
                     variant="contained"
                     color="primary"
+                    sx={{
+                      textTransform: "none",
+                    }}
                     endIcon={
                       isLoading ? (
                         <CircularProgress size={20} color="inherit" />
@@ -324,16 +317,10 @@ const RegisterInterface: React.FC = () => {
                         <ArrowForwardIos />
                       )
                     }
-                    sx={{
-                      textTransform: "none", // Ensure it's applied here
-                    }}
                   >
                     Register
                   </Button>
-                  <div
-                    className={styles.linkContainer}
-                    style={{ marginTop: "16px", textAlign: "center" }}
-                  >
+                  <div style={{ marginTop: "16px", textAlign: "center" }}>
                     <Link
                       variant="body2"
                       onClick={() => navigate("/login")}
