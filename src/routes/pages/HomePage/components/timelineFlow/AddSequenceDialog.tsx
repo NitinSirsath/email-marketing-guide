@@ -9,7 +9,20 @@ import {
   MenuItem,
 } from "@mui/material";
 
-const emailTemplates = [
+// Define types for email templates and sequences
+interface EmailTemplate {
+  label: string;
+  body: string;
+}
+
+interface NewSequence {
+  email: string;
+  scheduleTime: string;
+  emailTemplate: string;
+}
+
+// Email templates array
+const emailTemplates: EmailTemplate[] = [
   {
     label: "AI Assisted",
     body: "<h1>AI Assisted</h1><p>Your sequence is AI-assisted and personalized.</p>",
@@ -24,14 +37,16 @@ const emailTemplates = [
   },
 ];
 
+// Define props for AddSequenceDialog
 interface AddSequenceDialogProps {
   dialogOpen: boolean;
   handleDialogClose: () => void;
   saveSequence: () => void;
-  newSequence: any;
-  setNewSequence: React.Dispatch<React.SetStateAction<any>>;
+  newSequence: NewSequence;
+  setNewSequence: React.Dispatch<React.SetStateAction<NewSequence>>;
 }
 
+// Functional component
 const AddSequenceDialog: React.FC<AddSequenceDialogProps> = ({
   dialogOpen,
   handleDialogClose,
@@ -43,6 +58,7 @@ const AddSequenceDialog: React.FC<AddSequenceDialogProps> = ({
     <Dialog open={dialogOpen} onClose={handleDialogClose} fullWidth>
       <DialogTitle>Add New Sequence</DialogTitle>
       <DialogContent>
+        {/* Email Field */}
         <TextField
           label="Email"
           fullWidth
@@ -52,6 +68,7 @@ const AddSequenceDialog: React.FC<AddSequenceDialogProps> = ({
             setNewSequence((prev) => ({ ...prev, email: e.target.value }))
           }
         />
+        {/* Schedule Time Field */}
         <TextField
           label="Schedule Time"
           fullWidth
@@ -65,6 +82,7 @@ const AddSequenceDialog: React.FC<AddSequenceDialogProps> = ({
             }))
           }
         />
+        {/* Email Template Selector */}
         <TextField
           select
           label="Select Email Template"
@@ -85,6 +103,7 @@ const AddSequenceDialog: React.FC<AddSequenceDialogProps> = ({
           ))}
         </TextField>
       </DialogContent>
+      {/* Action Buttons */}
       <DialogActions>
         <Button onClick={handleDialogClose} color="secondary">
           Cancel

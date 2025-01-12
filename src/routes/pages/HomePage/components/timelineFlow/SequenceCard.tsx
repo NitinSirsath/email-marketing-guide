@@ -17,18 +17,7 @@ import {
 } from "@mui/material";
 import LaptopMacIcon from "@mui/icons-material/LaptopMac";
 import { useToastStore } from "../../../../../services/store/snackbar/toastStore";
-
-interface SequenceCardProps {
-  sequence: {
-    _id: string;
-    nodes: any[];
-    createdAt: string;
-    email: string;
-    scheduleTime: string;
-  };
-  onEdit: (sequence: any) => void;
-  onDelete: (sequence: any) => void; // Pass the full sequence object for deletion
-}
+import { SequenceCardProps } from "../../types/FlowTypes";
 
 const SequenceCard: React.FC<SequenceCardProps> = ({
   sequence,
@@ -37,7 +26,7 @@ const SequenceCard: React.FC<SequenceCardProps> = ({
 }) => {
   const { showToast } = useToastStore();
   const isPastSchedule = new Date(sequence.scheduleTime) < new Date();
-  const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
+  const [confirmDialogOpen, setConfirmDialogOpen] = useState<boolean>(false); // Explicit type
 
   const handleDeleteClick = () => {
     if (isPastSchedule) {

@@ -9,19 +9,14 @@ import {
   MenuItem,
 } from "@mui/material";
 import { emailTemplates } from "../mailTemplates/emailTemplates";
+import { Sequence } from "../../types/FlowTypes";
 
 interface EditSequenceDialogProps {
   dialogOpen: boolean;
   handleDialogClose: () => void;
   saveSequence: () => void;
-  currentSequence: {
-    id: string;
-    email: string;
-    scheduleTime: string;
-    nodes: Array<any>;
-    emailTemplate: string;
-  };
-  setCurrentSequence: React.Dispatch<React.SetStateAction<any>>;
+  currentSequence: Sequence | null; // Allow `null` for currentSequence
+  setCurrentSequence: React.Dispatch<React.SetStateAction<Sequence | null>>;
 }
 
 const EditSequenceDialog: React.FC<EditSequenceDialogProps> = ({
@@ -31,6 +26,8 @@ const EditSequenceDialog: React.FC<EditSequenceDialogProps> = ({
   currentSequence,
   setCurrentSequence,
 }) => {
+  if (!currentSequence) return null; // Prevent rendering when currentSequence is null
+
   return (
     <Dialog open={dialogOpen} onClose={handleDialogClose} fullWidth>
       <DialogTitle>Edit Sequence</DialogTitle>
@@ -41,10 +38,14 @@ const EditSequenceDialog: React.FC<EditSequenceDialogProps> = ({
           margin="normal"
           value={currentSequence.email}
           onChange={(e) =>
-            setCurrentSequence((prev) => ({
-              ...prev,
-              email: e.target.value,
-            }))
+            setCurrentSequence((prev) =>
+              prev
+                ? {
+                    ...prev,
+                    email: e.target.value,
+                  }
+                : null
+            )
           }
         />
         <TextField
@@ -54,10 +55,14 @@ const EditSequenceDialog: React.FC<EditSequenceDialogProps> = ({
           type="datetime-local"
           value={currentSequence.scheduleTime}
           onChange={(e) =>
-            setCurrentSequence((prev) => ({
-              ...prev,
-              scheduleTime: e.target.value,
-            }))
+            setCurrentSequence((prev) =>
+              prev
+                ? {
+                    ...prev,
+                    scheduleTime: e.target.value,
+                  }
+                : null
+            )
           }
         />
         <TextField
@@ -67,10 +72,14 @@ const EditSequenceDialog: React.FC<EditSequenceDialogProps> = ({
           margin="normal"
           value={currentSequence.emailTemplate}
           onChange={(e) =>
-            setCurrentSequence((prev) => ({
-              ...prev,
-              emailTemplate: e.target.value,
-            }))
+            setCurrentSequence((prev) =>
+              prev
+                ? {
+                    ...prev,
+                    emailTemplate: e.target.value,
+                  }
+                : null
+            )
           }
         >
           {emailTemplates.map((template) => (
