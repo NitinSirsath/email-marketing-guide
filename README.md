@@ -1,3 +1,6 @@
+The issue seems to be incorrect formatting of markdown syntax, particularly in sections like code blocks and subheadings. Here's a corrected and well-formatted version of the `README.md` file that should render correctly:
+
+````markdown
 # React + TypeScript + Vite
 
 This project is built using **React**, **TypeScript**, and **Vite**, offering a fast and minimal setup for development with Hot Module Replacement (HMR) and ESLint integration.
@@ -29,109 +32,123 @@ This project is built using **React**, **TypeScript**, and **Vite**, offering a 
    ```bash
    git clone https://github.com/your-username/your-repo.git
    cd your-repo
-   Install dependencies:
+   ```
+````
+
+2. Install dependencies:
+
+   ```bash
+   npm install
+   # or
+   yarn install
    ```
 
-bash
-Copy code
-npm install
+3. Start the development server:
+   ```bash
+   npm run dev
+   # or
+   yarn dev
+   ```
 
-# or
+### **Building for Production**
 
-yarn install
-Start the development server:
+1. Build the project for production:
 
-bash
-Copy code
-npm run dev
+   ```bash
+   npm run build
+   # or
+   yarn build
+   ```
 
-# or
+2. Preview the production build:
+   ```bash
+   npm run preview
+   # or
+   yarn preview
+   ```
 
-yarn dev
-Building for Production
-Build the project for production using:
+---
 
-bash
-Copy code
-npm run build
+## Expanding ESLint Configuration
 
-# or
+### **Type-Aware Linting Rules**
 
-yarn build
-Preview the production build:
-
-bash
-Copy code
-npm run preview
-
-# or
-
-yarn preview
-Expanding ESLint Configuration
-Type-Aware Linting Rules
 For a production-grade application, enable type-aware linting by updating the ESLint configuration:
 
-Configure the top-level parserOptions property:
+1. Configure the top-level `parserOptions` property:
 
-js
-Copy code
-export default tseslint.config({
-languageOptions: {
-parserOptions: {
-project: ['./tsconfig.node.json', './tsconfig.app.json'],
-tsconfigRootDir: import.meta.dirname,
-},
-},
-})
-Replace the tseslint.configs.recommended with stricter configurations:
+   ```javascript
+   export default tseslint.config({
+     languageOptions: {
+       parserOptions: {
+         project: ["./tsconfig.node.json", "./tsconfig.app.json"],
+         tsconfigRootDir: import.meta.dirname,
+       },
+     },
+   });
+   ```
 
-tseslint.configs.recommendedTypeChecked
-tseslint.configs.strictTypeChecked
-Optionally: ...tseslint.configs.stylisticTypeChecked
-Install and configure eslint-plugin-react:
+2. Replace the `tseslint.configs.recommended` with stricter configurations:
 
-bash
-Copy code
-npm install eslint-plugin-react
+   - `tseslint.configs.recommendedTypeChecked`
+   - `tseslint.configs.strictTypeChecked`
+   - Optionally: `...tseslint.configs.stylisticTypeChecked`
 
-# or
+3. Install and configure **eslint-plugin-react**:
 
-yarn add eslint-plugin-react
-Update eslint.config.js:
+   ```bash
+   npm install eslint-plugin-react
+   # or
+   yarn add eslint-plugin-react
+   ```
 
-js
-Copy code
-import react from 'eslint-plugin-react';
+4. Update `eslint.config.js`:
 
-export default tseslint.config({
-settings: { react: { version: '18.3' } },
-plugins: {
-react,
-},
-rules: {
-...react.configs.recommended.rules,
-...react.configs['jsx-runtime'].rules,
-},
-});
-References
-Vite Documentation: https://vitejs.dev/
-React Documentation: https://reactjs.org/
-TypeScript Documentation: https://www.typescriptlang.org/
-ESLint Plugin React: https://github.com/jsx-eslint/eslint-plugin-react
-Feedback or Questions?
+   ```javascript
+   import react from "eslint-plugin-react";
+
+   export default tseslint.config({
+     settings: { react: { version: "18.3" } },
+     plugins: {
+       react,
+     },
+     rules: {
+       ...react.configs.recommended.rules,
+       ...react.configs["jsx-runtime"].rules,
+     },
+   });
+   ```
+
+---
+
+## References
+
+- **[Vite Documentation](https://vitejs.dev/)**
+- **[React Documentation](https://reactjs.org/)**
+- **[TypeScript Documentation](https://www.typescriptlang.org/)**
+- **[ESLint Plugin React](https://github.com/jsx-eslint/eslint-plugin-react)**
+
+---
+
+## Feedback or Questions?
+
 Feel free to reach out:
 
-Email: nitinsirsath8855@gmail.com
-License
-This project is licensed under the MIT License.
+- **Email**: [nitinsirsath8855@gmail.com](mailto:nitinsirsath8855@gmail.com)
 
-markdown
-Copy code
+---
 
-### Key Changes:
+## License
 
-1. Added a **Features** section for clarity.
-2. Detailed **Getting Started** and **Building for Production** instructions.
-3. Improved **Expanding ESLint Configuration** with a step-by-step guide.
-4. Added **References** for further documentation.
-5. Included a **Feedback or Questions** section for contact.
+This project is licensed under the **MIT License**.
+
+````
+
+### Key Fixes:
+1. Corrected and standardized code blocks using triple backticks (` ``` `).
+2. Fixed spacing and formatting for subheadings (`###`) and bullet points.
+3. Ensured inline and block code snippets render correctly.
+4. Verified Markdown links and email formatting.
+
+This version should render perfectly on platforms like GitHub or Markdown viewers.
+````
