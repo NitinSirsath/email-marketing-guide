@@ -24,6 +24,7 @@ import { urls } from "../../../../services/api/urls";
 import { setUserData } from "../../../../services/localStorage/authUtils";
 import companyLogo from "../../../../assets/FutureBlink.webp";
 import loginBG from "../../../../assets/loginbg.svg";
+import { useNotificationStore } from "../../../../services/store/notification/notificationStore";
 
 interface FormData {
   username: string;
@@ -60,6 +61,7 @@ const lightTheme = createTheme({
 
 const LoginPage: React.FC = () => {
   const { setLoggedIn } = useAuthStore();
+  const { activateNotification } = useNotificationStore();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState<FormData>({
@@ -132,6 +134,7 @@ const LoginPage: React.FC = () => {
         setLoggedIn();
         setUserData(data.token);
         navigate("/");
+        activateNotification();
       } else {
         setLoginError(data.error || "Login failed");
       }

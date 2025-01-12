@@ -24,6 +24,7 @@ import { urls } from "../../../../services/api/urls";
 import { setUserData } from "../../../../services/localStorage/authUtils";
 import companyLogo from "../../../../assets/FutureBlink.webp";
 import registerBG from "../../../../assets/loginbg.svg";
+import { useNotificationStore } from "../../../../services/store/notification/notificationStore";
 
 // Define interfaces for FormData and API responses
 interface FormData {
@@ -57,6 +58,7 @@ const lightTheme = createTheme({
 
 const RegisterInterface: React.FC = () => {
   const { setLoggedIn } = useAuthStore();
+  const { activateNotification } = useNotificationStore();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState<FormData>({
@@ -179,6 +181,7 @@ const RegisterInterface: React.FC = () => {
         setLoggedIn();
         setUserData(data.token);
         navigate("/");
+        activateNotification();
       } else {
         console.error("Login after registration failed:", data.error);
       }
