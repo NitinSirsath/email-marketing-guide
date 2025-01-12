@@ -2,7 +2,7 @@ export const emailTemplates = [
   {
     label: "AI Assisted",
     value: "AI Assisted",
-    body: (sequenceId) => `
+    body: (sequenceId: string) => `
           <!DOCTYPE html>
           <html>
           <head>
@@ -62,7 +62,7 @@ export const emailTemplates = [
   {
     label: "AI Assisted: Follow up",
     value: "AI Assisted: Follow up",
-    body: (sequenceId) => `
+    body: (sequenceId: string) => `
           <!DOCTYPE html>
           <html>
           <head>
@@ -122,7 +122,7 @@ export const emailTemplates = [
   {
     label: "Simple Reminder",
     value: "Simple Reminder",
-    body: (sequenceId) => `
+    body: (sequenceId: string) => `
           <!DOCTYPE html>
           <html>
           <head>

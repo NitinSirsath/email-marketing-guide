@@ -33,8 +33,8 @@ export interface Sequence {
 export interface NewSequence {
   email: string;
   scheduleTime: string;
-  nodes: Node[];
   emailTemplate: string;
+  nodes: Node[]; // Added nodes property
 }
 
 export interface SequenceCardProps {

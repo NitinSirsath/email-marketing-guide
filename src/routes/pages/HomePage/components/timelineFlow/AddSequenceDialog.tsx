@@ -15,10 +15,17 @@ interface EmailTemplate {
   body: string;
 }
 
+interface Node {
+  id: string;
+  data: string;
+  position: { x: number; y: number };
+}
+
 interface NewSequence {
   email: string;
   scheduleTime: string;
   emailTemplate: string;
+  nodes: Node[]; // Ensure nodes property is included
 }
 
 // Email templates array
