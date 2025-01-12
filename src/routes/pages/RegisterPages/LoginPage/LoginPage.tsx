@@ -36,7 +36,7 @@ interface FormData {
 
 interface LoginResponse {
   token?: string;
-  error?: string;
+  message?: string;
 }
 
 const lightTheme = createTheme({
@@ -129,6 +129,7 @@ const LoginPage: React.FC = () => {
 
       const data: LoginResponse = await response.json();
       setIsLoading(false);
+      console.log(data, "data");
 
       if (response.ok && data.token) {
         setLoggedIn();
@@ -136,7 +137,7 @@ const LoginPage: React.FC = () => {
         navigate("/");
         activateNotification();
       } else {
-        setLoginError(data.error || "Login failed");
+        setLoginError(data.message || "Login failed");
       }
     } catch (error) {
       setIsLoading(false);

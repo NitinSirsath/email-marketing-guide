@@ -42,7 +42,7 @@ interface FormData {
 interface APIResponse {
   success?: boolean;
   token?: string;
-  error?: string;
+  message?: string;
 }
 
 // Light theme configuration
@@ -152,7 +152,7 @@ const RegisterInterface: React.FC = () => {
       if (response.ok) {
         handleLogin();
       } else {
-        setRegisterError(data.error || "Registration failed");
+        setRegisterError(data.message || "Registration failed");
       }
     } catch (error) {
       setIsLoading(false);
@@ -183,7 +183,7 @@ const RegisterInterface: React.FC = () => {
         navigate("/");
         activateNotification();
       } else {
-        console.error("Login after registration failed:", data.error);
+        console.error("Login after registration failed:", data.message);
       }
     } catch (error) {
       const errorMessage =
