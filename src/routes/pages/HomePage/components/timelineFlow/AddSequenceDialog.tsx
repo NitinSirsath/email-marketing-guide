@@ -70,7 +70,7 @@ const AddSequenceDialog: React.FC<AddSequenceDialogProps> = ({
           label="Select Email Template"
           fullWidth
           margin="normal"
-          value={newSequence.emailBody}
+          value={newSequence.emailTemplate}
           onChange={(e) =>
             setNewSequence((prev) => ({
               ...prev,
@@ -79,7 +79,7 @@ const AddSequenceDialog: React.FC<AddSequenceDialogProps> = ({
           }
         >
           {emailTemplates.map((template) => (
-            <MenuItem key={template.label} value={template.body}>
+            <MenuItem key={template.label} value={template.label}>
               {template.label}
             </MenuItem>
           ))}

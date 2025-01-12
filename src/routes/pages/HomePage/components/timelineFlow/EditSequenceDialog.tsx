@@ -74,7 +74,7 @@ const EditSequenceDialog: React.FC<EditSequenceDialogProps> = ({
           }
         >
           {emailTemplates.map((template) => (
-            <MenuItem key={template.label} value={template.value}>
+            <MenuItem key={template.label} value={template.label}>
               {template.label}
             </MenuItem>
           ))}

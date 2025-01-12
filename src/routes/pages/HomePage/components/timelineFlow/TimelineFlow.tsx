@@ -6,6 +6,7 @@ import AddSequenceDialog from "./AddSequenceDialog";
 import SequenceCard from "./SequenceCard";
 import EditSequenceDialog from "./EditSequenceDialog";
 import ConfirmationDialog from "./ConfirmationDialog";
+import { emailTemplates } from "../mailTemplates/emailTemplates";
 
 const TimelineFlow: React.FC = () => {
   const axiosInstance = useCustomAxios();
@@ -38,12 +39,24 @@ const TimelineFlow: React.FC = () => {
   // Save new sequence
   const saveSequence = async () => {
     console.log(newSequence, "newSequence");
+
+    // Find the selected template based on the user's choice
+    const selectedTemplate = emailTemplates.find(
+      (template) => template.value === newSequence.emailTemplate
+    );
+    console.log(selectedTemplate, newSequence, "newSequence");
+    if (!selectedTemplate) {
+      console.error("Selected email template not found");
+      return;
+    }
+
     const body = {
       email: newSequence.email,
       scheduleTime: newSequence.scheduleTime,
       nodes: newSequence.nodes,
-      emailBody: newSequence.emailTemplate, // Send only the template name
+      emailBody: selectedTemplate.body(newSequence.emailTemplate), // Dynamically render the body
     };
+
     try {
       const response = await axiosInstance.post("/emails/save", body);
       if (response.status === 201 || response.status === 200) {
