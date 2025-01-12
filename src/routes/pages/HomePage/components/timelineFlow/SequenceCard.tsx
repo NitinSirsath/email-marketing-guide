@@ -62,7 +62,7 @@ const SequenceCard: React.FC<SequenceCardProps> = ({
           </Typography>
         </Box>
 
-        <div style={{ display: "flex", gap: "10px" }}>
+        <div>
           <Button
             variant="outlined"
             size="small"

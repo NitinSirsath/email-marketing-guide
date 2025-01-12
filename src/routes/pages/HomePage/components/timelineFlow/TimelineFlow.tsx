@@ -16,57 +16,71 @@ const TimelineFlow: React.FC = () => {
     email: "",
     scheduleTime: "",
     nodes: [{ id: "1", data: "Start", position: { x: 0, y: 0 } }],
+    emailTemplate: "",
   });
   const [currentSequence, setCurrentSequence] = useState<any>(null);
   const [confirmationOpen, setConfirmationOpen] = useState(false);
   const [sequenceToDelete, setSequenceToDelete] = useState<any>(null);
 
+  // Fetch sequences
+  const fetchSequences = async () => {
+    try {
+      const response = await axiosInstance.get("/emails/all");
+      setSequences(response.data.sequences);
+    } catch (error) {
+      console.error("Error fetching sequences:", error);
+    }
+  };
   useEffect(() => {
-    const fetchSequences = async () => {
-      try {
-        const response = await axiosInstance.get("/emails/all");
-        setSequences(response.data.sequences);
-      } catch (error) {
-        console.error("Error fetching sequences:", error);
-      }
-    };
     fetchSequences();
   }, [axiosInstance]);
 
+  // Save new sequence
   const saveSequence = async () => {
+    console.log(newSequence, "newSequence");
+    const body = {
+      email: newSequence.email,
+      scheduleTime: newSequence.scheduleTime,
+      nodes: newSequence.nodes,
+      emailBody: newSequence.emailTemplate, // Send only the template name
+    };
     try {
-      const response = await axiosInstance.post("/emails/save", newSequence);
-      setSequences((prev) => [...prev, response.data.sequence]);
-      setDialogOpen(false);
+      const response = await axiosInstance.post("/emails/save", body);
+      if (response.status === 201 || response.status === 200) {
+        fetchSequences();
+        setDialogOpen(false);
+      }
     } catch (error) {
       console.error("Error saving sequence:", error);
     }
   };
 
+  // Update existing sequence
   const updateSequence = async () => {
     try {
       const response = await axiosInstance.post(
         `/emails/save`,
         currentSequence
       );
-      setSequences((prev) =>
-        prev.map((seq) =>
-          seq._id === currentSequence._id ? response.data.sequence : seq
-        )
-      );
-      setEditDialogOpen(false);
+      if (response.status === 200) {
+        fetchSequences();
+        setEditDialogOpen(false);
+      }
     } catch (error) {
       console.error("Error updating sequence:", error);
     }
   };
 
+  // Delete sequence
   const deleteSequence = async (sequenceId: string) => {
     try {
       const response = await axiosInstance.post("/emails/delete", {
         sequenceId,
       });
-      setSequences((prev) => prev.filter((seq) => seq._id !== sequenceId));
-      setConfirmationOpen(false);
+      if (response.status === 200) {
+        fetchSequences();
+        setConfirmationOpen(false);
+      }
       console.log("Sequence deleted successfully:", response.data);
     } catch (error) {
       console.error("Error deleting sequence:", error);
@@ -155,9 +169,9 @@ const TimelineFlow: React.FC = () => {
         <EditSequenceDialog
           dialogOpen={editDialogOpen}
           handleDialogClose={() => setEditDialogOpen(false)}
-          sequence={currentSequence}
-          setSequence={setCurrentSequence}
           saveSequence={updateSequence}
+          currentSequence={currentSequence}
+          setCurrentSequence={setCurrentSequence}
         />
       )}
     </div>

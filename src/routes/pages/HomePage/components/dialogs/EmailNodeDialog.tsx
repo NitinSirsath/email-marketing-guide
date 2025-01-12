@@ -1,59 +1,100 @@
-import React, { useState } from "react";
-import { Dialog, TextField, Button } from "@mui/material";
+import React from "react";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  TextField,
+  MenuItem,
+} from "@mui/material";
 
-interface EmailNodeDialogProps {
-  open: boolean;
-  onClose: () => void;
-  onSave: (data: { email: string; subject: string; body: string }) => void;
+const emailTemplates = [
+  {
+    label: "AI Assisted",
+    body: "<h1>AI Assisted</h1><p>Your sequence is AI-assisted and personalized.</p>",
+  },
+  {
+    label: "AI Assisted: Follow up",
+    body: "<h1>Follow-Up</h1><p>This is an AI-assisted follow-up email.</p>",
+  },
+  {
+    label: "Simple Reminder",
+    body: "<h1>Reminder</h1><p>This is a simple reminder email for your sequence.</p>",
+  },
+];
+
+interface EditSequenceDialogProps {
+  dialogOpen: boolean;
+  handleDialogClose: () => void;
+  saveSequence: () => void;
+  sequence: any;
+  setSequence: React.Dispatch<React.SetStateAction<any>>;
 }
 
-const EmailNodeDialog: React.FC<EmailNodeDialogProps> = ({
-  open,
-  onClose,
-  onSave,
+const EditSequenceDialog: React.FC<EditSequenceDialogProps> = ({
+  dialogOpen,
+  handleDialogClose,
+  saveSequence,
+  sequence,
+  setSequence,
 }) => {
-  const [email, setEmail] = useState("");
-  const [subject, setSubject] = useState("");
-  const [body, setBody] = useState("");
-
-  const handleSave = () => {
-    onSave({ email, subject, body });
-    onClose();
-  };
-
   return (
-    <Dialog open={open} onClose={onClose}>
-      <div style={{ padding: 20 }}>
-        <h4>Configure Email</h4>
+    <Dialog open={dialogOpen} onClose={handleDialogClose} fullWidth>
+      <DialogTitle>Edit Sequence</DialogTitle>
+      <DialogContent>
         <TextField
           label="Email"
           fullWidth
-          margin="dense"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          margin="normal"
+          value={sequence.email}
+          onChange={(e) =>
+            setSequence((prev: any) => ({ ...prev, email: e.target.value }))
+          }
         />
         <TextField
-          label="Subject"
+          label="Schedule Time"
           fullWidth
-          margin="dense"
-          value={subject}
-          onChange={(e) => setSubject(e.target.value)}
+          margin="normal"
+          type="datetime-local"
+          value={sequence.scheduleTime}
+          onChange={(e) =>
+            setSequence((prev: any) => ({
+              ...prev,
+              scheduleTime: e.target.value,
+            }))
+          }
         />
         <TextField
-          label="Body"
+          select
+          label="Select Email Template"
           fullWidth
-          margin="dense"
-          multiline
-          rows={4}
-          value={body}
-          onChange={(e) => setBody(e.target.value)}
-        />
-        <Button onClick={handleSave} variant="contained" color="primary">
+          margin="normal"
+          value={sequence.emailBody}
+          onChange={(e) =>
+            setSequence((prev: any) => ({
+              ...prev,
+              emailBody: e.target.value,
+            }))
+          }
+        >
+          {emailTemplates.map((template) => (
+            <MenuItem key={template.label} value={template.body}>
+              {template.label}
+            </MenuItem>
+          ))}
+        </TextField>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={handleDialogClose} color="secondary">
+          Cancel
+        </Button>
+        <Button onClick={saveSequence} color="primary" variant="contained">
           Save
         </Button>
-      </div>
+      </DialogActions>
     </Dialog>
   );
 };
 
-export default EmailNodeDialog;
+export default EditSequenceDialog;

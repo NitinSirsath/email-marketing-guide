@@ -1,27 +1,35 @@
 import React from "react";
 import {
+  Button,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
   TextField,
-  Button,
+  MenuItem,
 } from "@mui/material";
+import { emailTemplates } from "../mailTemplates/emailTemplates";
 
 interface EditSequenceDialogProps {
   dialogOpen: boolean;
   handleDialogClose: () => void;
-  sequence: any;
-  setSequence: React.Dispatch<React.SetStateAction<any>>;
   saveSequence: () => void;
+  currentSequence: {
+    id: string;
+    email: string;
+    scheduleTime: string;
+    nodes: Array<any>;
+    emailTemplate: string;
+  };
+  setCurrentSequence: React.Dispatch<React.SetStateAction<any>>;
 }
 
 const EditSequenceDialog: React.FC<EditSequenceDialogProps> = ({
   dialogOpen,
   handleDialogClose,
-  sequence,
-  setSequence,
   saveSequence,
+  currentSequence,
+  setCurrentSequence,
 }) => {
   return (
     <Dialog open={dialogOpen} onClose={handleDialogClose} fullWidth>
@@ -31,9 +39,12 @@ const EditSequenceDialog: React.FC<EditSequenceDialogProps> = ({
           label="Email"
           fullWidth
           margin="normal"
-          value={sequence.email}
+          value={currentSequence.email}
           onChange={(e) =>
-            setSequence((prev) => ({ ...prev, email: e.target.value }))
+            setCurrentSequence((prev) => ({
+              ...prev,
+              email: e.target.value,
+            }))
           }
         />
         <TextField
@@ -41,14 +52,33 @@ const EditSequenceDialog: React.FC<EditSequenceDialogProps> = ({
           fullWidth
           margin="normal"
           type="datetime-local"
-          value={sequence.scheduleTime}
+          value={currentSequence.scheduleTime}
           onChange={(e) =>
-            setSequence((prev) => ({
+            setCurrentSequence((prev) => ({
               ...prev,
               scheduleTime: e.target.value,
             }))
           }
         />
+        <TextField
+          select
+          label="Select Email Template"
+          fullWidth
+          margin="normal"
+          value={currentSequence.emailTemplate}
+          onChange={(e) =>
+            setCurrentSequence((prev) => ({
+              ...prev,
+              emailTemplate: e.target.value,
+            }))
+          }
+        >
+          {emailTemplates.map((template) => (
+            <MenuItem key={template.label} value={template.value}>
+              {template.label}
+            </MenuItem>
+          ))}
+        </TextField>
       </DialogContent>
       <DialogActions>
         <Button onClick={handleDialogClose} color="secondary">

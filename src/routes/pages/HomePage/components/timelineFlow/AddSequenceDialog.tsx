@@ -6,25 +6,30 @@ import {
   DialogContent,
   DialogTitle,
   TextField,
-  Typography,
+  MenuItem,
 } from "@mui/material";
+
+const emailTemplates = [
+  {
+    label: "AI Assisted",
+    body: "<h1>AI Assisted</h1><p>Your sequence is AI-assisted and personalized.</p>",
+  },
+  {
+    label: "AI Assisted: Follow up",
+    body: "<h1>Follow-Up</h1><p>This is an AI-assisted follow-up email.</p>",
+  },
+  {
+    label: "Simple Reminder",
+    body: "<h1>Reminder</h1><p>This is a simple reminder email for your sequence.</p>",
+  },
+];
 
 interface AddSequenceDialogProps {
   dialogOpen: boolean;
   handleDialogClose: () => void;
   saveSequence: () => void;
-  newSequence: {
-    email: string;
-    scheduleTime: string;
-    nodes: Array<any>;
-  };
-  setNewSequence: React.Dispatch<
-    React.SetStateAction<{
-      email: string;
-      scheduleTime: string;
-      nodes: Array<any>;
-    }>
-  >;
+  newSequence: any;
+  setNewSequence: React.Dispatch<React.SetStateAction<any>>;
 }
 
 const AddSequenceDialog: React.FC<AddSequenceDialogProps> = ({
@@ -60,9 +65,25 @@ const AddSequenceDialog: React.FC<AddSequenceDialogProps> = ({
             }))
           }
         />
-        <Typography variant="body2" color="textSecondary" margin="normal">
-          Nodes are pre-filled with the default "Start" node.
-        </Typography>
+        <TextField
+          select
+          label="Select Email Template"
+          fullWidth
+          margin="normal"
+          value={newSequence.emailBody}
+          onChange={(e) =>
+            setNewSequence((prev) => ({
+              ...prev,
+              emailTemplate: e.target.value,
+            }))
+          }
+        >
+          {emailTemplates.map((template) => (
+            <MenuItem key={template.label} value={template.body}>
+              {template.label}
+            </MenuItem>
+          ))}
+        </TextField>
       </DialogContent>
       <DialogActions>
         <Button onClick={handleDialogClose} color="secondary">
